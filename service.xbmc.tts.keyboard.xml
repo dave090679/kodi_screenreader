@@ -1,0 +1,17 @@
+<keymap>
+  <global>
+    <keyboard>
+      <f1>NotifyAll(service.xbmc.tts,REPEAT)</f1>
+      <f2>NotifyAll(service.xbmc.tts,EXTRA)</f2>
+      <f3>NotifyAll(service.xbmc.tts,ITEM_EXTRA)</f3>
+      <f4>NotifyAll(service.xbmc.tts,STOP)</f4>
+      <f6>Addon.OpenSettings(service.xbmc.tts)</f6>
+      <f12>RunScript(special://home/addons/service.xbmc.tts/enabler.py)</f12>
+      <numpadplus mod="ctrl">NotifyAll(service.xbmc.tts,VOL_UP)</numpadplus>
+      <numpadminus mod="ctrl">NotifyAll(service.xbmc.tts,VOL_DOWN)</numpadminus>
+      <plus mod="ctrl">NotifyAll(service.xbmc.tts,VOL_UP)</plus>
+      <minus mod="ctrl">NotifyAll(service.xbmc.tts,VOL_DOWN)</minus>
+      <equals mod="ctrl">NotifyAll(service.xbmc.tts,VOL_UP)</equals>
+    </keyboard>
+  </global>
+</keymap>
