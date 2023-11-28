@@ -1,0 +1,4 @@
+[submodule "service.xbmc.tts"]
+	path = service.xbmc.tts
+	url = https://github.com/pvagner/service.xbmc.tts
+	branch = 2to3
