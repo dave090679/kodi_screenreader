@@ -6,9 +6,8 @@
 !include x64.nsh
 !define APP_NAME "kodi screenreader"
 !define WEB_SITE "https://kodi.tv/"
-!define VERSION "01.00.00.00"
-!define DESCRIPTION "deutsche Übersetzungen und Aktualisierungen für Aufgabenpakete, aktualisierte Karten u. a."
-!define INSTALLER_NAME "kodi_screenreader.exe"
+!define VERSION "01.10.00.00"
+!define INSTALLER_NAME "kodi_screenreader_1.1.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 ######################################################################
 AutoCloseWindow true
@@ -49,13 +48,6 @@ sectiongroup "Basiskomponenten"
     setoutpath "$APPDATA\Kodi\userdata\keymaps"
     file "service.xbmc.tts.keyboard.xml"
   sectionend
-  section "ruuks addon repository"
-    sectioninsttype ${IT_MIN}
-    setoutpath "$APPDATA\Kodi\addons\ruuk.addon.repository"
-    file /r "ruuk.addon.repository\*.*"
-    setoutpath "$APPDATA\Kodi\userdata\addon_data\ruuk.addon.repository"
-    file "ENABLED"
-sectionend
 sectiongroupend
 Function .onInit
   ReadRegStr $0 HKCU "Software\Kodi" "Start Menu Folder"
