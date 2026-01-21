@@ -1,0 +1,31 @@
+commit e54a5c5a97e21d1513ac6261572ddce52e364bd8
+Author: dave090679 <xkill85@gmx.net>
+Date:   Sun Nov 23 23:58:35 2025 +0100
+
+    v1.1
+    - updated backends; nvda should now work again.
+
+commit bb3f1147918e39a184f977e0d563dbb0b55382e3
+Merge: 44bbf21 2e6e8b8
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Tue Nov 28 12:53:10 2023 +0100
+
+    Merge branch 'main' of https://github.com/dave090679/kodi_screenreader
+
+commit 44bbf216c17976b5716192c5e90e1f17ea033ae5
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Tue Nov 28 12:35:41 2023 +0100
+
+    initial release of kodi screenreader installer for windows
+
+commit 2e6e8b8df6140dbceb67bb17e098e8d5fae6f0b9
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Tue Nov 28 12:35:41 2023 +0100
+
+    initial release of kodi screenreader installer for windows
+
+commit 84107ee10fb8de6d043b7f736796c7a744676232
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Tue Nov 28 11:26:55 2023 +0100
+
+    Initial commit
