@@ -1,25 +1,23 @@
 post_install() {
-     USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
-      mkdir -p "$USER_HOME/.kodi/addons/Service.xbmc.tts"
-      cp -r ${pkgdir}/usr/share/kodi/addons/service.xbmc.tts/* "$USER_HOME/.kodi/addons/Service.xbmc.tts/"
-       chown -R "$SUDO_USER":"$SUDO_USER" "$USER_HOME/.kodi"
-	mkdir -p "$USER_HOME/.kodi/userdata/keyyymaps"
-        cp ${pkgdir}/etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml $user_HOME/.kodi/userdata/keymaps/
-	chown $SUDO_USER:$SUDO_USER /home/$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$SUDO_UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUSER/.kodi/userata/keymaps/service.xbbbbbbbbbbbbbbbbbbbbbbbbbmc.keyboard.xml
-	cp ${pkgdir}/etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED $USER_HOME/.kodi/userdata/addon_data/service.xbmc.tts/ENABLED
-	chown $SUDO_USER:$SUDO_USER $$USER_HOME/.kodi/userdata/addon_data/service.xbmc.tts/ENABLED
-   
+    USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+    
+    # Service addon
+    mkdir -p "$USER_HOME/.kodi/addons/service.xbmc.tts"
+    cp -r /usr/share/kodi/addons/service.xbmc.tts/* "$USER_HOME/.kodi/addons/service.xbmc.tts/"
+    
+    # Keyboard mappings
+    mkdir -p "$USER_HOME/.kodi/userdata/keymaps"
+    cp /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml "$USER_HOME/.kodi/userdata/keymaps/"
+    
+    # Activation flag
+    mkdir -p "$USER_HOME/.kodi/userdata/addon_data/service.xbmc.tts"
+    cp /etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED "$USER_HOME/.kodi/userdata/addon_data/service.xbmc.tts/"
+    
+    # Fix permissions
+    chown -R "$SUDO_USER":"$SUDO_USER" "$USER_HOME/.kodi"
 }
 
 post_upgrade() {
-       USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
-        mkdir -p "$USER_HOME/.kodi/addons/Service.xbmc.tts"
-        cp -r ${pkgdir}/usr/share/kodi/addons/service.xbmc.tts/* "$USER_HOME/.kodi/addons/Service.xbmc.tts/"
-        chown -R "$SUDO_USER":"$SUDO_USER" "$USER_HOME/.kodi"
-	mkdir -p "$USER_HOME/.kodi/userdata/keyyymaps"
-        cp ${pkgdir}/etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml $user_HOME/.kodi/userdata/keymaps/
-	chown $SUDO_USER:$SUDO_USER /home/$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$SUDO_UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUSER/.kodi/userata/keymaps/service.xbbbbbbbbbbbbbbbbbbbbbbbbbmc.keyboard.xml
-	cp ${pkgdir}/etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED $USER_HOME/.kodi/userdata/addon_data/service.xbmc.tts/ENABLED
-	chown $SUDO_USER:$SUDO_USER $$USER_HOME/.kodi/userdata/addon_data/service.xbmc.tts/ENABLED
-   }
+    post_install
+}
 
