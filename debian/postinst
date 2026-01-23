@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Link Kodi config directory to standard location
+if [ ! -L "/etc/kodi/userdata/keymaps" ]; then
+    mkdir -p /etc/kodi/userdata
+fi
+
+# Set proper permissions for Kodi
+if command -v kodi >/dev/null 2>&1; then
+    chown -R kodi:kodi /usr/share/kodi/addons/service.xbmc.tts 2>/dev/null || true
+    chown -R kodi:kodi /usr/share/kodi/addons/script.module.nvdacontrollerclient 2>/dev/null || true
+fi
+
+exit 0

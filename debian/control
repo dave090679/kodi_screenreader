@@ -1,0 +1,24 @@
+Source: kodi-screenreader
+Section: media
+Priority: optional
+Maintainer: Dave <dave090679@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.0
+Homepage: https://github.com/dave090679/kodi_screenreader
+Vcs-Git: https://github.com/dave090679/kodi_screenreader.git
+Vcs-Browser: https://github.com/dave090679/kodi_screenreader
+
+Package: kodi-screenreader
+Architecture: all
+Depends: kodi (>= 18), python3
+Description: Screenreader addon for Kodi media center
+ kodi-screenreader provides audio output and keyboard control for the Kodi
+ media center, making it accessible for visually impaired users. It includes
+ Text-to-Speech (TTS) support and integration with assistive technologies
+ like NVDA on Windows.
+ .
+ Features:
+  - Text-to-Speech (TTS) audio output
+  - Keyboard shortcuts for navigation and control
+  - NVDA (Non-Visual Desktop Access) integration support
+  - Kodi addon repository integration

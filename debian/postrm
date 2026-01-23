@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Cleanup on removal
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    # Remove configuration files if requested
+    if [ "$1" = "purge" ]; then
+        rm -rf /etc/kodi/userdata/addon_data/service.xbmc.tts 2>/dev/null || true
+    fi
+fi
+
+exit 0
