@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_build:
+	# No build required for Python addon
+
+override_dh_auto_install:
+	# Install addon files to Kodi addons directory
+	mkdir -p debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts
+	mkdir -p debian/kodi-screenreader/usr/share/kodi/addons/ruuk.addon.repository
+	mkdir -p debian/kodi-screenreader/usr/share/kodi/addons/script.module.nvdacontrollerclient
+	
+	# Copy service.xbmc.tts files
+	cp -r service.xbmc.tts/* debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts/ 2>/dev/null || true
+	
+	# Copy keyboard mappings
+	mkdir -p debian/kodi-screenreader/etc/kodi/userdata/keymaps
+	cp service.xbmc.tts.keyboard.xml debian/kodi-screenreader/etc/kodi/userdata/keymaps/ 2>/dev/null || true
+	
+	# Copy ENABLED flag to addon_data directory
+	mkdir -p debian/kodi-screenreader/etc/kodi/userdata/addon_data/service.xbmc.tts
+	cp ENABLED debian/kodi-screenreader/etc/kodi/userdata/addon_data/service.xbmc.tts/ 2>/dev/null || true
+
+override_dh_auto_test:
+	# No tests required for this addon
