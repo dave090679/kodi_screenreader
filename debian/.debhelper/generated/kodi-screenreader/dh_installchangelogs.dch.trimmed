@@ -1,0 +1,8 @@
+kodi-screenreader (1.0.0-1) unstable; urgency=medium
+
+  * Initial Debian release
+  * Package Kodi screenreader addon for Linux distributions
+  * Includes TTS support and NVDA integration
+  * Provides accessible keyboard navigation for Kodi
+
+ -- Dave <dave090679@users.noreply.github.com>  Mon, 21 Jan 2026 12:00:00 +0000

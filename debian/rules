@@ -14,12 +14,15 @@ override_dh_auto_install:
 	# Copy service.xbmc.tts files
 	cp -r service.xbmc.tts/* debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts/ 2>/dev/null || true
 	
+<<<<<<< HEAD
 	# Copy repository addon
 	cp -r ruuk.addon.repository/* debian/kodi-screenreader/usr/share/kodi/addons/ruuk.addon.repository/
 	
 	# Copy NVDA controller client
 	cp -r script.module.nvdacontrollerclient/* debian/kodi-screenreader/usr/share/kodi/addons/script.module.nvdacontrollerclient/
 	
+=======
+>>>>>>> 38434a2a81841b2544124396633fa04a01bba2ec
 	# Copy keyboard mappings
 	mkdir -p debian/kodi-screenreader/etc/kodi/userdata/keymaps
 	cp service.xbmc.tts.keyboard.xml debian/kodi-screenreader/etc/kodi/userdata/keymaps/ 2>/dev/null || true

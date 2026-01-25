@@ -9,14 +9,24 @@ KODI_USER_ADDONS_DIR=""
 # Find the current logged-in user (not root if script is run with sudo)
 if [ "$SUDO_USER" ]; then
     CURRENT_USER="$SUDO_USER"
-    CURRENT_UID=$(id -u "$SUDO_USER")
-    CURRENT_GID=$(id -g "$SUDO_USER")
+    CURRENT_UID=$(id -u "$SUDO_USER" 2>/dev/null) || CURRENT_UID=""
+    CURRENT_GID=$(id -g "$SUDO_USER" 2>/dev/null) || CURRENT_GID=""
     KODI_USER_DIR=$(eval echo "~$SUDO_USER/.kodi")
+elif [ ! -z "$LOGNAME" ] && [ "$LOGNAME" != "root" ]; then
+    CURRENT_USER="$LOGNAME"
+    CURRENT_UID=$(id -u "$LOGNAME" 2>/dev/null) || CURRENT_UID=""
+    CURRENT_GID=$(id -g "$LOGNAME" 2>/dev/null) || CURRENT_GID=""
+    KODI_USER_DIR=$(eval echo "~$LOGNAME/.kodi")
 else
-    CURRENT_USER="$USER"
-    CURRENT_UID=$(id -u "$CURRENT_USER")
-    CURRENT_GID=$(id -g "$CURRENT_USER")
-    KODI_USER_DIR="$HOME/.kodi"
+    # Fallback: skip installation if no suitable user found
+    echo "Warning: Could not determine target user for Kodi add-on installation"
+    exit 0
+fi
+
+# Check if we successfully identified a user and retrieved UID/GID
+if [ -z "$CURRENT_UID" ] || [ -z "$CURRENT_GID" ]; then
+    echo "Warning: Could not retrieve UID/GID for user $CURRENT_USER. Skipping installation."
+    exit 0
 fi
 
 # Create necessary directories if they don't exist
