@@ -1,9 +1,9 @@
 Package: kodi-screenreader
 Version: 1.0.0-1
 Architecture: all
-Maintainer: Dave <dave090679@users.noreply.github.com>
-Installed-Size: 2034
-Depends: kodi (>= 18), python3
+Maintainer: David Parduhn <xkill85@gmx.net>
+Installed-Size: 1484
+Depends: kodi (>= 18), python3, espeak-ng | speech-dispatcher | pico2wave
 Section: media
 Priority: optional
 Homepage: https://github.com/dave090679/kodi_screenreader
