@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import time, threading, Queue, os
+import time, threading, queue, os
 from lib import util
-import audio
+from . import audio
 
 class TTSBackendBase(object):
     """The base class for all speech engine backends
@@ -11,7 +11,7 @@ class TTSBackendBase(object):
     """
     provider = 'auto'
     displayName = 'Auto'
-    pauseInsert = u'...'
+    pauseInsert = '...'
     settings = None
     canStreamWav = False
     inWavStreamMode = False
@@ -81,7 +81,7 @@ class TTSBackendBase(object):
         if vol > self.volumeExternalEndpoints[1]: vol = self.volumeExternalEndpoints[1]
         util.setSetting('{0}.{1}'.format('volume',self.provider),vol)
         if util.DEBUG: util.LOG('Volume UP: {0}'.format(vol))
-        return u'{0} {1}'.format(vol,self.volumeSuffix)
+        return '{0} {1}'.format(vol,self.volumeSuffix)
 
     def volumeDown(self):
         if not self.settings or not 'volume' in self.settings: return util.T(32180)
@@ -90,7 +90,7 @@ class TTSBackendBase(object):
         if vol < self.volumeExternalEndpoints[0]: vol = self.volumeExternalEndpoints[0]
         util.setSetting('{0}.{1}'.format('volume',self.provider),vol)
         if util.DEBUG: util.LOG('Volume DOWN: {0}'.format(vol))
-        return u'{0} {1}'.format(vol,self.volumeSuffix)
+        return '{0} {1}'.format(vol,self.volumeSuffix)
 
     def flagAsDead(self,reason=''):
         self.dead = True
@@ -228,7 +228,7 @@ class ThreadedTTSBackend(TTSBackendBase):
     def __init__(self):
         self.active = True
         self._threadedIsSpeaking = False
-        self.queue = Queue.Queue()
+        self.queue = queue.Queue()
         self.thread = threading.Thread(target=self._handleQueue,name='TTSThread: %s' % self.provider)
         self.thread.start()
         TTSBackendBase.__init__(self)
@@ -245,7 +245,7 @@ class ThreadedTTSBackend(TTSBackendBase):
                     self._threadedIsSpeaking = True
                     self.threadedSay(text)
                     self._threadedIsSpeaking = False
-            except Queue.Empty:
+            except queue.Empty:
                 pass
         util.LOG('Threaded TTS Finished: {0}'.format(self.provider))
 
@@ -254,7 +254,7 @@ class ThreadedTTSBackend(TTSBackendBase):
             while True:
                 self.queue.get_nowait()
                 self.queue.task_done()
-        except Queue.Empty:
+        except queue.Empty:
             return
 
     def say(self,text,interrupt=False):
@@ -400,7 +400,7 @@ class LogOnlyTTSBackend(TTSBackendBase):
     provider = 'log'
     displayName = 'Log'
     def say(self,text,interrupt=False):
-        util.LOG('say(Interrupt={1}): {0}'.format(repr(text),interrupt))
+        util.DEBUG_LOG('say(Interrupt={1}): {0}'.format(repr(text),interrupt))
 
     @staticmethod
     def available():

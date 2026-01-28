@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import base
+from . import base
 import subprocess
 import ctypes
 import ctypes.util
@@ -82,7 +82,7 @@ class ESpeakTTSBackend(base.SimpleTTSBackendBase):
             out = subprocess.check_output(['espeak','--voices']).splitlines()
             out.pop(0)
             for l in out:
-                voice = re.split('\s+',l.strip(),5)[3]
+                voice = re.split('\s+',l.decode('utf-8').strip(),5)[3].replace('_',' ')
                 ret.append((voice,voice))
             return ret
         return None
@@ -132,7 +132,7 @@ class ESpeakCtypesTTSBackend(base.TTSBackendBase):
         if not self.eSpeak: return
         if self.voice: self.eSpeak.espeak_SetVoiceByName(self.voice)
         if interrupt: self.eSpeak.espeak_Cancel()
-        if isinstance(text,unicode): text = text.encode('utf-8')
+        if isinstance(text,str): text = text.encode('utf-8')
         sb_text = ctypes.create_string_buffer(text)
         size = ctypes.sizeof(sb_text)
         self.eSpeak.espeak_Synth(sb_text,size,0,0,0,0x1000,None,None)
@@ -155,7 +155,10 @@ class ESpeakCtypesTTSBackend(base.TTSBackendBase):
 
     @staticmethod
     def available():
-        return bool(ctypes.util.find_library('espeak'))
+        try:
+            return bool(ctypes.util.find_library('espeak'))
+        except IOError:
+            return False
 
     @classmethod
     def settingList(cls,setting,*args):

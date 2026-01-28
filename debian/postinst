@@ -4,22 +4,14 @@ set -e
 # Install Kodi add-ons for the current logged-in user
 # The add-ons are installed in the user's home directory, not system-wide
 
-KODI_USER_ADDONS_DIR=""
 
-# Find the current logged-in user (not root if script is run with sudo)
-if [ "$SUDO_USER" ]; then
-    CURRENT_USER="$SUDO_USER"
-    CURRENT_UID=$(id -u "$SUDO_USER")
-    CURRENT_GID=$(id -g "$SUDO_USER")
-    KODI_USER_DIR=$(eval echo "~$SUDO_USER/.kodi")
-else
-    CURRENT_USER="$USER"
+# Find the current logged-in user
+# This works both with sudo and when installed via GUI package managers
+for CURRENT_USER in $(who -q | head -1); do 
+  if [ "$CURRENT_USER" != "root" ]; then
     CURRENT_UID=$(id -u "$CURRENT_USER")
     CURRENT_GID=$(id -g "$CURRENT_USER")
     KODI_USER_DIR="$HOME/.kodi"
-fi
-
-# Create necessary directories if they don't exist
 mkdir -p "$KODI_USER_DIR/addons"
 cp -r "/usr/share/kodi/addons/service.xbmc.tts" "$KODI_USER_DIR/addons/"
 mkdir -p "$KODI_USER_DIR/userdata/keymaps"
@@ -27,5 +19,7 @@ cp -f "/etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml" "$KODI_USER_DIR
 mkdir -p "$KODI_USER_DIR/userdata/addon_data/service.xbmc.tts"
 cp -f "/etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED" "$KODI_USER_DIR/userdata/addon_data/service.xbmc.tts"
 chown -R "$CURRENT_UID:$CURRENT_GID" "$KODI_USER_DIR" 2>/dev/null || true
+fi
+done
 
 exit 0

@@ -1,4 +1,4 @@
-kodi-screenreader (1.0.0-1) unstable; urgency=medium
+kodi-screenreader (1.0.0-2) unstable; urgency=medium
 
   * Initial Debian release
   * Package Kodi screenreader addon for Linux distributions

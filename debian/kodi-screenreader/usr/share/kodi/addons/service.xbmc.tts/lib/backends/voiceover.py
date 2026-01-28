@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import base
+from . import base
 import subprocess
 import sys
 from lib import util

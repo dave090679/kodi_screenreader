@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, subprocess, os
 from lib import util
-from base import ThreadedTTSBackend
+from .base import ThreadedTTSBackend
 
 class OSXSayTTSBackend_Internal(ThreadedTTSBackend):
     provider = 'OSXSay'
@@ -27,7 +27,7 @@ class OSXSayTTSBackend_Internal(ThreadedTTSBackend):
         return OSXSayTTSBackend_SubProcess()
 
     def init(self):
-        import cocoapy
+        from . import cocoapy
         self.cocoapy = cocoapy
         self.pool = cocoapy.ObjCClass('NSAutoreleasePool').alloc().init()
         self.synth = cocoapy.ObjCClass('NSSpeechSynthesizer').alloc().init()

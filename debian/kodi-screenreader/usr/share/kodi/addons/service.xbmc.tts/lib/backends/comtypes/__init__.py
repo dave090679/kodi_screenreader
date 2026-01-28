@@ -2,8 +2,8 @@ import types
 import sys
 import os
 
-# comtypes version numbers follow semver (http://semver.org/)
-__version__ = "1.1.0"
+# comtypes version numbers follow semver (http://semver.org/) and PEP 440
+__version__ = "1.1.9"
 
 import logging
 class NullHandler(logging.Handler):
@@ -23,21 +23,19 @@ from ctypes import *
 from _ctypes import COMError
 from comtypes import patcher
 
-def _check_version(actual):
+def _check_version(actual, tlib_cached_mtime=None):
     from comtypes.tools.codegenerator import version as required
     if actual != required:
         raise ImportError("Wrong version")
     if not hasattr(sys, "frozen"):
         g = sys._getframe(1).f_globals
-        mod_path = g.get("__file__")
         tlb_path = g.get("typelib_path")
         try:
-            mod_mtime = os.stat(mod_path).st_mtime
-            tlib_mtime = os.stat(tlb_path).st_mtime
+            tlib_curr_mtime = os.stat(tlb_path).st_mtime
         except (OSError, TypeError):
             return
-        if mod_mtime < tlib_mtime:
-            raise ImportError("Typelib newer than module")
+        if not tlib_cached_mtime or abs(tlib_curr_mtime - tlib_cached_mtime) >= 1:
+            raise ImportError("Typelib different than module")
 
 try:
     COMError()
@@ -148,10 +146,7 @@ def CoInitialize():
 
 def CoInitializeEx(flags=None):
     if flags is None:
-        if os.name == "ce":
-            flags = getattr(sys, "coinit_flags", COINIT_MULTITHREADED)
-        else:
-            flags = getattr(sys, "coinit_flags", COINIT_APARTMENTTHREADED)
+        flags = getattr(sys, "coinit_flags", COINIT_APARTMENTTHREADED)
     logger.debug("CoInitializeEx(None, %s)", flags)
     _ole32.CoInitializeEx(None, flags)
 
@@ -172,7 +167,7 @@ def CoUninitialize():
     _ole32_nohresult.CoUninitialize()
 
 
-def shutdown(func=_ole32_nohresult.CoUninitialize,
+def _shutdown(func=_ole32_nohresult.CoUninitialize,
              _debug=logger.debug,
              _exc_clear=getattr(sys, "exc_clear", lambda: None)):
     # Make sure no COM pointers stay in exception frames.
@@ -193,8 +188,7 @@ def shutdown(func=_ole32_nohresult.CoUninitialize,
     _debug("CoUnititialize() done.")
 
 import atexit
-atexit.register(shutdown)
-del shutdown
+atexit.register(_shutdown)
 
 ################################################################
 # global registries.
@@ -378,7 +372,7 @@ class _cominterface_meta(type):
 
                     try:
                         result = self.Item(*args)
-                    except COMError, err:
+                    except COMError as err:
                         (hresult, text, details) = err.args
                         if hresult == -2147352565:  # DISP_E_BADINDEX
                             raise IndexError("invalid index")
@@ -397,7 +391,7 @@ class _cominterface_meta(type):
                     "Attempt 'self.Item[index] = value'"
                     try:
                         self.Item[index] = value
-                    except COMError, err:
+                    except COMError as err:
                         (hresult, text, details) = err.args
                         if hresult == -2147352565:  # DISP_E_BADINDEX
                             raise IndexError("invalid index")
@@ -494,7 +488,7 @@ class _cominterface_meta(type):
                 if is_prop:
                     self.__map_case__[name[5:].lower()] = name[5:]
 
-        for (name, nargs), methods in properties.items():
+        for (name, nargs), methods in list(properties.items()):
             # methods contains [propget or None, propput or None, propputref or None]
             if methods[1] is not None and methods[2] is not None:
                 # both propput and propputref.
@@ -580,7 +574,7 @@ class _cominterface_meta(type):
             for itf in self.mro()[1:-1]:
                 result += len(itf.__dict__["_methods_"])
             return result
-        except KeyError, err:
+        except KeyError as err:
             (name,) = err.args
             if name == "_methods_":
                 raise TypeError("baseinterface '%s' has no _methods_" % itf.__name__)
@@ -653,8 +647,15 @@ class _cominterface_meta(type):
                     outnum += 1
 
             rescode = func(self_, *args, **kw)
+            # If there is only a single output value, then do not expect it to
+            # be iterable.
+            if outnum == 1:  # rescode is not iterable
+                if len(outargs) == 1:
+                    rescode = rescode.__ctypes_from_outparam__()
+                return rescode
+
             rescode = list(rescode)
-            for outnum, o in outargs.items():
+            for outnum, o in list(outargs.items()):
                 rescode[outnum] = o.__ctypes_from_outparam__()
             return rescode
         return call_with_inout
@@ -778,7 +779,7 @@ class _cominterface_meta(type):
                     self.__map_case__[name[5:].lower()] = name[5:]
 
         # create public properties / attribute accessors
-        for (name, doc, nargs), methods in properties.items():
+        for (name, doc, nargs), methods in list(properties.items()):
             # methods contains [propget or None, propput or None, propputref or None]
             if methods[1] is not None and methods[2] is not None:
                 # both propput and propputref.
@@ -894,9 +895,8 @@ class _compointer_meta(type(c_void_p), _cominterface_meta):
     "metaclass for COM interface pointer classes"
     # no functionality, but needed to avoid a metaclass conflict
 
-class _compointer_base(c_void_p):
+class _compointer_base(c_void_p, metaclass=_compointer_meta):
     "base class for COM interface pointer classes"
-    __metaclass__ = _compointer_meta
     def __del__(self, _debug=logger.debug):
         "Release the COM refcount we own."
         if self:
@@ -1016,7 +1016,7 @@ class BSTR(_SimpleCData):
 ################################################################
 # IDL stuff
 
-class helpstring(unicode):
+class helpstring(str):
     "Specifies the helpstring for a COM method or property."
 
 class defaultvalue(object):
@@ -1122,7 +1122,7 @@ def COMMETHOD(idlflags, restype, methodname, *argspec):
 ################################################################
 # IUnknown, the root of all evil...
 
-class IUnknown(object):
+class IUnknown(object, metaclass=_cominterface_meta):
     """The most basic COM interface.
 
     Each subclasses of IUnknown must define these class attributes:
@@ -1135,7 +1135,6 @@ class IUnknown(object):
     with STDMETHOD or COMMETHOD calls.
     """
     _case_insensitive_ = False
-    __metaclass__ = _cominterface_meta
     _iid_ = GUID("{00000000-0000-0000-C000-000000000046}")
 
     _methods_ = [
@@ -1201,7 +1200,7 @@ def CoGetObject(displayname, interface):
         interface = IUnknown
     punk = POINTER(interface)()
     # Do we need a way to specify the BIND_OPTS parameter?
-    _ole32.CoGetObject(unicode(displayname),
+    _ole32.CoGetObject(str(displayname),
                        None,
                        byref(interface._iid_),
                        byref(punk))
@@ -1380,6 +1379,6 @@ from comtypes._comobject import COMObject
 
 from comtypes._meta import _coclass_meta
 
-class CoClass(COMObject):
-    __metaclass__ = _coclass_meta
+class CoClass(COMObject, metaclass=_coclass_meta):
+    pass
 ################################################################

@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 import os, ctypes
 from lib import util
-from base import TTSBackendBase
+from .base import TTSBackendBase
+
+def isKodi64():
+    import sys
+    res = sys.maxsize>2**32
+    return res
 
 def getDLLPath():
-    p = os.path.join(util.profileDirectory(),'nvdaControllerClient32.dll')
+    dllName = 'nvdaControllerClient64.dll' if isKodi64() else 'nvdaControllerClient32.dll'
+    p = os.path.join(util.profileDirectory(), dllName)
     if os.path.exists(p): return p
-    p = os.path.join(util.backendsDirectory(),'nvda','nvdaControllerClient32.dll')
+    p = os.path.join(util.backendsDirectory(), 'nvda', dllName)
     if os.path.exists(p): return p
     try:
         import xbmc
@@ -22,8 +28,11 @@ def getDLLPath():
 
 try:
     from ctypes import windll
+    # to avoid OverflowError loading 64-bit DLL
+    from ctypes import wintypes
+    windll.kernel32.FreeLibrary.argtypes = [wintypes.HMODULE]
 except ImportError:
-    windll =None
+    windll = None
 
 class NVDATTSBackend(TTSBackendBase):
     provider = 'nvda'
