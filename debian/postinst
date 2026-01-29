@@ -4,23 +4,15 @@ set -e
 # Install Kodi add-ons for the current logged-in user
 # The add-ons are installed in the user's home directory, not system-wide
 
-KODI_USER_ADDONS_DIR=""
-
 # Find the current logged-in user (not root if script is run with sudo)
 if [ "$SUDO_USER" ]; then
     CURRENT_USER="$SUDO_USER"
-    CURRENT_UID=$(id -u "$SUDO_USER" 2>/dev/null) || CURRENT_UID=""
-    CURRENT_GID=$(id -g "$SUDO_USER" 2>/dev/null) || CURRENT_GID=""
-    KODI_USER_DIR=$(eval echo "~$SUDO_USER/.kodi")
 elif [ ! -z "$LOGNAME" ] && [ "$LOGNAME" != "root" ]; then
     CURRENT_USER="$LOGNAME"
-    CURRENT_UID=$(id -u "$LOGNAME" 2>/dev/null) || CURRENT_UID=""
-    CURRENT_GID=$(id -g "$LOGNAME" 2>/dev/null) || CURRENT_GID=""
-    KODI_USER_DIR=$(eval echo "~$LOGNAME/.kodi")
-else
-    # Fallback: skip installation if no suitable user found
-    echo "Warning: Could not determine target user for Kodi add-on installation"
-    exit 0
+fi
+CURRENT_UID=$(id -u "$CURRENT_USER" 2>/dev/null) || CURRENT_UID=""
+CURRENT_GID=$(id -g "$CURRENT_USER" 2>/dev/null) || CURRENT_GID=""
+KODI_USER_DIR=$(eval echo "~$CURRENT_USER/.kodi")
 fi
 
 # Check if we successfully identified a user and retrieved UID/GID
