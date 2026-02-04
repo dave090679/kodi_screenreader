@@ -4,26 +4,6 @@ set -e
 # Install Kodi add-ons for the current logged-in user
 # The add-ons are installed in the user's home directory, not system-wide
 
-<<<<<<< HEAD
-# Find the current logged-in user (not root if script is run with sudo)
-if [ "$SUDO_USER" ]; then
-    CURRENT_USER="$SUDO_USER"
-elif [ ! -z "$LOGNAME" ] && [ "$LOGNAME" != "root" ]; then
-    CURRENT_USER="$LOGNAME"
-fi
-CURRENT_UID=$(id -u "$CURRENT_USER" 2>/dev/null) || CURRENT_UID=""
-CURRENT_GID=$(id -g "$CURRENT_USER" 2>/dev/null) || CURRENT_GID=""
-KODI_USER_DIR=$(eval echo "~$CURRENT_USER/.kodi")
-fi
-
-# Check if we successfully identified a user and retrieved UID/GID
-if [ -z "$CURRENT_UID" ] || [ -z "$CURRENT_GID" ]; then
-    echo "Warning: Could not retrieve UID/GID for user $CURRENT_USER. Skipping installation."
-    exit 0
-fi
-
-# Create necessary directories if they don't exist
-=======
 
 # Find the current logged-in user
 # This works both with sudo and when installed via GUI package managers
@@ -32,7 +12,6 @@ for CURRENT_USER in $(who -q | head -1); do
     CURRENT_UID=$(id -u "$CURRENT_USER")
     CURRENT_GID=$(id -g "$CURRENT_USER")
     KODI_USER_DIR="$HOME/.kodi"
->>>>>>> 6b9479d1f169bd1f8fff035ff2e7883ccb748abb
 mkdir -p "$KODI_USER_DIR/addons"
 cp -r "/usr/share/kodi/addons/service.xbmc.tts" "$KODI_USER_DIR/addons/"
 mkdir -p "$KODI_USER_DIR/userdata/keymaps"

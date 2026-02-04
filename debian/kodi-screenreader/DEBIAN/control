@@ -1,16 +1,12 @@
-Source: kodi-screenreader
+Package: kodi-screenreader
+Version: 1.0.0-2
+Architecture: all
+Maintainer: David Parduhn <xkill85@gmx.net>
+Installed-Size: 2033
+Depends: kodi (>= 18), python3, espeak-ng | speech-dispatcher | pico2wave
 Section: media
 Priority: optional
-Maintainer: David Parduhn <xkill85@gmx.net>
-Build-Depends: debhelper-compat (= 13)
-Standards-Version: 4.6.0
 Homepage: https://github.com/dave090679/kodi_screenreader
-Vcs-Git: https://github.com/dave090679/kodi_screenreader.git
-Vcs-Browser: https://github.com/dave090679/kodi_screenreader
-
-Package: kodi-screenreader
-Architecture: all
-Depends: kodi (>= 18), python3, espeak-ng | speech-dispatcher | pico2wave
 Description: Screenreader addon for Kodi media center
  kodi-screenreader provides audio output and keyboard control for the Kodi
  media center, making it accessible for visually impaired users. It includes

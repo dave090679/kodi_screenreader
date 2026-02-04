@@ -1,17 +1,22 @@
 # Maintainer: Dave <dave090679@users.noreply.github.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 pkgname=kodi_screenreader
 pkgver=1.0.r2.gb15d75f
 =======
 pkgname=kodi-screenreader
 pkgver=1.0.0
 >>>>>>> 38434a2a81841b2544124396633fa04a01bba2ec
+=======
+pkgname=kodi_screenreader
+pkgver=1.0.2.r0.gb3599be
+>>>>>>> 6b9479d1f169bd1f8fff035ff2e7883ccb748abb
 pkgrel=1
 pkgdesc="Screenreader addon for Kodi media center with TTS and NVDA support"
 arch=('any')
 url="https://github.com/dave090679/kodi_screenreader"
 license=('GPL2' 'LGPL2.1')
-depends=('kodi' 'python')
+depends=('kodi' 'python3')
 makedepends=('git')
 source=("git+https://github.com/dave090679/kodi_screenreader.git")
 md5sums=('SKIP')
