@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-import time, threading, Queue, os
+import os
+import queue
+import threading
+import time
 from lib import util
 import audio
 
@@ -228,7 +231,7 @@ class ThreadedTTSBackend(TTSBackendBase):
     def __init__(self):
         self.active = True
         self._threadedIsSpeaking = False
-        self.queue = Queue.Queue()
+        self.queue = queue.Queue()
         self.thread = threading.Thread(target=self._handleQueue,name='TTSThread: %s' % self.provider)
         self.thread.start()
         TTSBackendBase.__init__(self)
@@ -245,7 +248,7 @@ class ThreadedTTSBackend(TTSBackendBase):
                     self._threadedIsSpeaking = True
                     self.threadedSay(text)
                     self._threadedIsSpeaking = False
-            except Queue.Empty:
+            except queue.Empty:
                 pass
         util.LOG('Threaded TTS Finished: {0}'.format(self.provider))
 
@@ -254,7 +257,7 @@ class ThreadedTTSBackend(TTSBackendBase):
             while True:
                 self.queue.get_nowait()
                 self.queue.task_done()
-        except Queue.Empty:
+        except queue.Empty:
             return
 
     def say(self,text,interrupt=False):

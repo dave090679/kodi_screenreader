@@ -170,7 +170,8 @@ def _processSetting(setting,default):
     elif isinstance(default,int):
         return int(float(setting or 0))
     elif isinstance(default,list):
-        if setting: return binascii.unhexlify(setting).split('\0')
+        if setting:
+            return binascii.unhexlify(setting.encode('ascii')).decode('utf-8').split('\0')
         else: return default
 
     return setting
@@ -181,7 +182,7 @@ def setSetting(key,value):
 
 def _processSettingForWrite(value):
     if isinstance(value,list):
-        value = binascii.hexlify('\0'.join(value))
+        value = binascii.hexlify('\0'.join(value).encode('utf-8')).decode('ascii')
     elif isinstance(value,bool):
         value = value and 'true' or 'false'
     return str(value)
@@ -311,10 +312,10 @@ def runInThread(func,args=(),name='?'):
 BASE_COMMAND = 'XBMC.NotifyAll(service.xbmc.tts,SAY,"{{\\"text\\":\\"{0}\\",\\"interrupt\\":{1}}}")'
 
 def safeEncode(text):
-    return binascii.hexlify(text)
+    return binascii.hexlify(text.encode('utf-8')).decode('ascii')
 
 def safeDecode(enc_text):
-    return binascii.unhexlify(enc_text)
+    return binascii.unhexlify(enc_text.encode('ascii')).decode('utf-8')
 
 def notifySayText(text,interrupt=False):
     assert isinstance(text,str), "Not Unicode"

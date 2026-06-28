@@ -25,27 +25,35 @@ class ESpeakTTSBackend(base.SimpleTTSBackendBase):
         self.process = None
         self.update()
 
+    @staticmethod
+    def getCommand():
+        if util.commandIsAvailable('espeak'):
+            return 'espeak'
+        if util.commandIsAvailable('espeak-ng'):
+            return 'espeak-ng'
+        return None
+
     def addCommonArgs(self,args,text):
         if self.voice: args.extend(('-v',self.voice))
         if self.speed: args.extend(('-s',str(self.speed)))
         if self.pitch: args.extend(('-p',str(self.pitch)))
         if self.volume != 100: args.extend(('-a',str(self.volume)))
-        args.append(text.encode('utf-8'))
+        args.append(text)
 
     def runCommand(self,text,outFile):
-        args = ['espeak','-w',outFile]
+        args = [self.getCommand(),'-w',outFile]
         self.addCommonArgs(args,text)
         subprocess.call(args)
         return True
 
     def runCommandAndSpeak(self,text):
-        args = ['espeak']
+        args = [self.getCommand()]
         self.addCommonArgs(args,text)
         self.process = subprocess.Popen(args)
         while self.process.poll() == None and self.active: util.sleep(10)
 
     def runCommandAndPipe(self,text):
-        args = ['espeak','--stdout']
+        args = [self.getCommand(),'--stdout']
         self.addCommonArgs(args,text)
         self.process = subprocess.Popen(args,stdout=subprocess.PIPE)
         return self.process.stdout
@@ -79,10 +87,13 @@ class ESpeakTTSBackend(base.SimpleTTSBackendBase):
         if setting == 'voice':
             import re
             ret = []
-            out = subprocess.check_output(['espeak','--voices']).splitlines()
+            command = cls.getCommand()
+            if not command:
+                return ret
+            out = subprocess.check_output([command,'--voices'], text=True, errors='ignore').splitlines()
             out.pop(0)
             for l in out:
-                voice = re.split('\s+',l.strip(),5)[3]
+                voice = re.split(r'\s+',l.strip(),5)[3]
                 ret.append((voice,voice))
             return ret
         return None
@@ -90,7 +101,10 @@ class ESpeakTTSBackend(base.SimpleTTSBackendBase):
     @staticmethod
     def available():
         try:
-            subprocess.call(['espeak','--version'], stdout=(open(os.path.devnull, 'w')), stderr=subprocess.STDOUT)
+            command = ESpeakTTSBackend.getCommand()
+            if not command:
+                return False
+            subprocess.call([command,'--version'], stdout=(open(os.path.devnull, 'w')), stderr=subprocess.STDOUT)
         except:
             return False
         return True

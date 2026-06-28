@@ -11,7 +11,10 @@ except:
 PLAYSFX_HAS_USECACHED = False
 
 try:
-    voidWav = os.path.join(xbmc.translatePath(util.xbmcaddon.Addon().getAddonInfo('path')).decode('utf-8'),'resources','wavs','void.wav')
+    addon_path = xbmc.translatePath(util.xbmcaddon.Addon().getAddonInfo('path'))
+    if isinstance(addon_path, bytes):
+        addon_path = addon_path.decode('utf-8')
+    voidWav = os.path.join(addon_path,'resources','wavs','void.wav')
     xbmc.playSFX(voidWav,False)
     PLAYSFX_HAS_USECACHED = True
 except:
@@ -19,7 +22,7 @@ except:
 
 def check_snd_bm2835():
     try:
-        return 'snd_bcm2835' in subprocess.check_output(['lsmod'])
+        return 'snd_bcm2835' in subprocess.check_output(['lsmod'], text=True, errors='ignore')
     except:
         util.ERROR('check_snd_bm2835(): lsmod filed',hide_tb=True)
     return False
@@ -201,7 +204,7 @@ class SubprocessAudioPlayer(AudioPlayer):
         self._wavProcess = subprocess.Popen(self._pipeArgs,stdin=subprocess.PIPE,stdout=(open(os.path.devnull, 'w')), stderr=subprocess.STDOUT)
         try:
             shutil.copyfileobj(source,self._wavProcess.stdin)
-        except IOError,e:
+        except IOError as e:
             if e.errno != errno.EPIPE:
                 util.ERROR('Error piping audio',hide_tb=True)
         except:
@@ -391,7 +394,7 @@ class Mpg321OEPiAudioPlayer(SubprocessAudioPlayer):
         self._wavProcess = subprocess.Popen('mpg321 - --wav - | aplay',stdin=subprocess.PIPE,stdout=(open(os.path.devnull, 'w')), stderr=subprocess.STDOUT,env=self.env,shell=True)
         try:
             shutil.copyfileobj(source,self._wavProcess.stdin)
-        except IOError,e:
+        except IOError as e:
             if e.errno != errno.EPIPE:
                 util.ERROR('Error piping audio',hide_tb=True)
         except:
@@ -497,7 +500,7 @@ class WavAudioPlayerHandler(BasePlayerHandler):
 
     def getOutFile(self,text):
         if self._player.needsHashedFilename:
-            self.outFile = self.outFileBase % hashlib.md5(text).hexdigest()
+            self.outFile = self.outFileBase % hashlib.md5(text.encode('utf-8')).hexdigest()
         return self.outFile
 
     def setSpeed(self,speed):
@@ -550,6 +553,4 @@ class MP3AudioPlayerHandler(WavAudioPlayerHandler):
         for p in cls.players:
             if p.available('mp3'): return True
         return False
-
-
 

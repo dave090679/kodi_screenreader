@@ -1,8 +1,9 @@
 %global repo_root %(pwd)
 %global _sourcedir %{repo_root}
+%global addon_version %(python3 %{repo_root}/packaging/addon_version.py)
 
 Name:           kodi_screenreader
-Version:        1.0.8
+Version:        %{addon_version}
 Release:        1%{?dist}
 Summary:        Screenreader addon for Kodi media center with TTS and NVDA support
 
@@ -10,7 +11,7 @@ License:        GPL-2.0-only AND LGPL-2.1-only
 URL:            https://github.com/dave090679/kodi_screenreader
 BuildArch:      noarch
 
-Requires:       kodi python3
+Requires:       kodi, python3, speech-dispatcher, espeak-ng
 
 %description
 Screenreader addon for the Kodi media center providing text-to-speech
@@ -24,71 +25,80 @@ cp -a %{_sourcedir}/LICENSE .
 # No build required (Kodi addon is interpreted Python + assets)
 
 %install
-install -dm755 %{buildroot}%{_datadir}/kodi/addons/service.xbmc.tts
-cp -a %{_sourcedir}/service.xbmc.tts/. %{buildroot}%{_datadir}/kodi/addons/service.xbmc.tts/
-
-install -Dm644 %{_sourcedir}/service.xbmc.tts.keyboard.xml \
-    %{buildroot}%{_sysconfdir}/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml
-
-install -Dm644 %{_sourcedir}/ENABLED \
-    %{buildroot}%{_sysconfdir}/kodi/userdata/addon_data/service.xbmc.tts/ENABLED
+bash %{_sourcedir}/packaging/install-addon-tree.sh %{buildroot}
 
 %post
 get_logged_in_users() {
-    USERS=$(loginctl list-users --no-legend 2>/dev/null | awk '{print $1}')
+    USERS=$(loginctl list-users --no-legend 2>/dev/null | awk '{print $2}')
     [ -z "$USERS" ] && USERS=$(who | awk '{print $1}')
     echo "$USERS"
 }
 
-for USER in $(get_logged_in_users); do
-    [ "$USER" = "root" ] && continue
-
-    USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
-    [ -z "$USER_HOME" ] && continue
+install_user_addon() {
+    USER_NAME="$1"
+    USER_HOME=$(getent passwd "$USER_NAME" | cut -d: -f6)
+    [ -z "$USER_HOME" ] && return 0
 
     KODI_DIR="$USER_HOME/.kodi"
 
-    mkdir -p "$KODI_DIR/addons"
-    mkdir -p "$KODI_DIR/userdata/keymaps"
-    mkdir -p "$KODI_DIR/userdata/addon_data/service.xbmc.tts"
+    rm -rf "$KODI_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_DIR/userdata/keymaps"
+    install -dm755 "$KODI_DIR/userdata/addon_data/service.xbmc.tts"
 
-    cp -r "/usr/share/kodi/addons/service.xbmc.tts" "$KODI_DIR/addons/" 2>/dev/null || true
-    cp -f "/etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml" \
-          "$KODI_DIR/userdata/keymaps/" 2>/dev/null || true
-    cp -f "/etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED" \
-          "$KODI_DIR/userdata/addon_data/service.xbmc.tts/" 2>/dev/null || true
+    cp -a /usr/share/kodi/addons/service.xbmc.tts/. "$KODI_DIR/addons/service.xbmc.tts/"
+    install -m 644 /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml \
+        "$KODI_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml"
+    install -m 644 /etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED \
+        "$KODI_DIR/userdata/addon_data/service.xbmc.tts/ENABLED"
 
-    chown -R "$USER:$USER" "$KODI_DIR" 2>/dev/null || true
+    chown -R "$USER_NAME:$USER_NAME" \
+        "$KODI_DIR/addons/service.xbmc.tts" \
+        "$KODI_DIR/userdata/keymaps" \
+        "$KODI_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
+}
+
+for USER in $(get_logged_in_users); do
+    [ "$USER" = "root" ] && continue
+    install_user_addon "$USER"
 done
 
 exit 0
 
 %triggerin -- %{name}
 get_logged_in_users() {
-    USERS=$(loginctl list-users --no-legend 2>/dev/null | awk '{print $1}')
+    USERS=$(loginctl list-users --no-legend 2>/dev/null | awk '{print $2}')
     [ -z "$USERS" ] && USERS=$(who | awk '{print $1}')
     echo "$USERS"
 }
 
-for USER in $(get_logged_in_users); do
-    [ "$USER" = "root" ] && continue
-
-    USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
-    [ -z "$USER_HOME" ] && continue
+install_user_addon() {
+    USER_NAME="$1"
+    USER_HOME=$(getent passwd "$USER_NAME" | cut -d: -f6)
+    [ -z "$USER_HOME" ] && return 0
 
     KODI_DIR="$USER_HOME/.kodi"
 
-    mkdir -p "$KODI_DIR/addons"
-    mkdir -p "$KODI_DIR/userdata/keymaps"
-    mkdir -p "$KODI_DIR/userdata/addon_data/service.xbmc.tts"
+    rm -rf "$KODI_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_DIR/userdata/keymaps"
+    install -dm755 "$KODI_DIR/userdata/addon_data/service.xbmc.tts"
 
-    cp -r "/usr/share/kodi/addons/service.xbmc.tts" "$KODI_DIR/addons/" 2>/dev/null || true
-    cp -f "/etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml" \
-          "$KODI_DIR/userdata/keymaps/" 2>/dev/null || true
-    cp -f "/etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED" \
-          "$KODI_DIR/userdata/addon_data/service.xbmc.tts/" 2>/dev/null || true
+    cp -a /usr/share/kodi/addons/service.xbmc.tts/. "$KODI_DIR/addons/service.xbmc.tts/"
+    install -m 644 /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml \
+        "$KODI_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml"
+    install -m 644 /etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED \
+        "$KODI_DIR/userdata/addon_data/service.xbmc.tts/ENABLED"
 
-    chown -R "$USER:$USER" "$KODI_DIR" 2>/dev/null || true
+    chown -R "$USER_NAME:$USER_NAME" \
+        "$KODI_DIR/addons/service.xbmc.tts" \
+        "$KODI_DIR/userdata/keymaps" \
+        "$KODI_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
+}
+
+for USER in $(get_logged_in_users); do
+    [ "$USER" = "root" ] && continue
+    install_user_addon "$USER"
 done
 
 exit 0

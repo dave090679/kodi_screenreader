@@ -91,9 +91,10 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	mkdir -p debian/kodi-screenreader/usr/share/kodi/addons
-	cp -r service.xbmc.tts debian/kodi-screenreader/usr/share/kodi/addons/
-	cp -r ruuk.addon.repository debian/kodi-screenreader/usr/share/kodi/addons/
-	cp -r script.module.nvdacontrollerclient debian/kodi-screenreader/usr/share/kodi/addons/
+	install -dm755 debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts
+	cp -a service.xbmc.tts/. debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts/
+	if [ -d ruuk.addon.repository ]; then cp -a ruuk.addon.repository/. debian/kodi-screenreader/usr/share/kodi/addons/ruuk.addon.repository/; fi
+	if [ -d script.module.nvdacontrollerclient ]; then cp -a script.module.nvdacontrollerclient/. debian/kodi-screenreader/usr/share/kodi/addons/script.module.nvdacontrollerclient/; fi
 
 override_dh_auto_test:
 	# No tests
@@ -171,9 +172,10 @@ package() {
     cd "$pkgname"
     
     install -dm755 "${pkgdir}/usr/share/kodi/addons"
-    cp -r service.xbmc.tts "${pkgdir}/usr/share/kodi/addons/"
-    cp -r ruuk.addon.repository "${pkgdir}/usr/share/kodi/addons/"
-    cp -r script.module.nvdacontrollerclient "${pkgdir}/usr/share/kodi/addons/"
+    install -dm755 "${pkgdir}/usr/share/kodi/addons/service.xbmc.tts"
+    cp -a service.xbmc.tts/. "${pkgdir}/usr/share/kodi/addons/service.xbmc.tts/"
+    if [ -d "ruuk.addon.repository" ]; then install -dm755 "${pkgdir}/usr/share/kodi/addons/ruuk.addon.repository"; cp -a ruuk.addon.repository/. "${pkgdir}/usr/share/kodi/addons/ruuk.addon.repository/"; fi
+    if [ -d "script.module.nvdacontrollerclient" ]; then install -dm755 "${pkgdir}/usr/share/kodi/addons/script.module.nvdacontrollerclient"; cp -a script.module.nvdacontrollerclient/. "${pkgdir}/usr/share/kodi/addons/script.module.nvdacontrollerclient/"; fi
     
     install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }

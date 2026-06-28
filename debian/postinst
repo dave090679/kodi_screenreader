@@ -1,25 +1,39 @@
 #!/bin/bash
 set -e
 
-# Install Kodi add-ons for the current logged-in user
-# The add-ons are installed in the user's home directory, not system-wide
+get_logged_in_users() {
+    USERS=$(loginctl list-users --no-legend 2>/dev/null | awk '{print $2}')
+    [ -z "$USERS" ] && USERS=$(who | awk '{print $1}')
+    echo "$USERS"
+}
 
+install_user_addon() {
+    USER_NAME="$1"
+    USER_HOME=$(getent passwd "$USER_NAME" | cut -d: -f6)
+    [ -z "$USER_HOME" ] && return 0
 
-# Find the current logged-in user
-# This works both with sudo and when installed via GUI package managers
-for CURRENT_USER in $(who -q | head -1); do 
-  if [ "$CURRENT_USER" != "root" ]; then
-    CURRENT_UID=$(id -u "$CURRENT_USER")
-    CURRENT_GID=$(id -g "$CURRENT_USER")
-    KODI_USER_DIR="$HOME/.kodi"
-mkdir -p "$KODI_USER_DIR/addons"
-cp -r "/usr/share/kodi/addons/service.xbmc.tts" "$KODI_USER_DIR/addons/"
-mkdir -p "$KODI_USER_DIR/userdata/keymaps"
-cp -f "/etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml" "$KODI_USER_DIR/userdata/keymaps"
-mkdir -p "$KODI_USER_DIR/userdata/addon_data/service.xbmc.tts"
-cp -f "/etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED" "$KODI_USER_DIR/userdata/addon_data/service.xbmc.tts"
-chown -R "$CURRENT_UID:$CURRENT_GID" "$KODI_USER_DIR" 2>/dev/null || true
-fi
+    KODI_USER_DIR="$USER_HOME/.kodi"
+
+    install -dm755 "$KODI_USER_DIR/addons/service.xbmc.tts"
+    rm -rf "$KODI_USER_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_USER_DIR/addons/service.xbmc.tts"
+    cp -a /usr/share/kodi/addons/service.xbmc.tts/. "$KODI_USER_DIR/addons/service.xbmc.tts/"
+
+    install -dm755 "$KODI_USER_DIR/userdata/keymaps"
+    install -Dm644 /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml \
+        "$KODI_USER_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml"
+
+    install -Dm644 /etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED \
+        "$KODI_USER_DIR/userdata/addon_data/service.xbmc.tts/ENABLED"
+
+    chown -R "$USER_NAME:$USER_NAME" "$KODI_USER_DIR/addons/service.xbmc.tts" \
+        "$KODI_USER_DIR/userdata/keymaps" \
+        "$KODI_USER_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
+}
+
+for CURRENT_USER in $(get_logged_in_users); do
+    [ "$CURRENT_USER" = "root" ] && continue
+    install_user_addon "$CURRENT_USER"
 done
 
 exit 0
