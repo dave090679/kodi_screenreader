@@ -1,0 +1,1224 @@
+<?xml version="1.0" ?>
+<settings version="1">
+	<section id="service.xbmc.tts">
+		<category id="engine" label="32001" help="">
+			<group id="1">
+				<setting id="backend" type="string" label="32002" help="">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.BACKEND_DIALOG)</data>
+					</control>
+				</setting>
+				<!-- IF EDITING, PLEASE NOTE: if you insert a setting for a backend, you need to increment the visible condition for each following backend setting -->
+
+				<!-- Flite -->
+				<setting id="voice.Flite" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Flite</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;Flite\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="output_via_flite.Flite" type="boolean" label="32008" help="" parent="backend">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Flite</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="player.Flite" type="string" label="32007" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="output_via_flite.Flite">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Flite</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.PLAYER_DIALOG,{&quot;backend&quot;:&quot;Flite&quot;})</data>
+					</control>
+				</setting>
+				<setting id="speed.Flite" type="integer" label="32009" help="" parent="backend">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>20</minimum>
+						<maximum>200</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.Flite">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-1,mplayer)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">Flite</condition>
+								<condition on="property" name="InfoBool"> eq(-2,false)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.Flite" type="integer" label="32010" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.Flite">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-2,mplayer) </condition>
+								<condition on="property" name="InfoBool"> eq(-2,paplay)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">Flite</condition>
+								<condition on="property" name="InfoBool"> eq(-3,false)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- eSpeak -->
+				<setting id="voice.eSpeak-ctypes" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak-ctypes</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;eSpeak-ctypes\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.eSpeak" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+											<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;eSpeak\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="speed.eSpeak" type="integer" label="32011" help="" parent="backend">
+					<level>0</level>
+					<default>175</default>
+					<constraints>
+						<minimum>80</minimum>
+						<maximum>450</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="pitch.eSpeak" type="integer" label="32005" help="" parent="backend">
+					<level>0</level>
+					<default>50</default>
+					<constraints>
+						<minimum>0</minimum>
+						<maximum>99</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="output_via_espeak.eSpeak" type="boolean" label="32012" help="" parent="backend">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="player.eSpeak" type="string" label="32007" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="output_via_espeak.eSpeak">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.PLAYER_DIALOG,{&quot;backend&quot;:&quot;eSpeak&quot;})</data>
+				</control>
+				</setting>
+				<setting id="pipe.eSpeak" type="boolean" label="32013" help="" parent="backend">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="output_via_espeak.eSpeak">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="volume.eSpeak" type="integer" label="32010" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">eSpeak</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- SAPI -->
+				<setting id="voice.SAPI" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">SAPI</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;SAPI\&quot;,\&quot;voice\&quot;]&quot;)</data>
+				</control>
+				</setting>
+				<setting id="speed.SAPI" type="integer" label="32004" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-10</minimum>
+						<maximum>10</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">SAPI</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="pitch.SAPI" type="integer" label="32005" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-10</minimum>
+						<maximum>10</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">SAPI</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.SAPI" type="integer" label="32014" help="" parent="backend">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>0</minimum>
+						<maximum>100</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">SAPI</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="percentage">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="speak_via_xbmc.SAPI" type="boolean" label="32015" help="" parent="backend">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">SAPI</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+
+				<!-- pico2wave -->
+				<setting id="language.pico2wave" type="string" label="32016" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">pico2wave</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;pico2wave\&quot;,\&quot;language\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="player.pico2wave" type="string" label="32007" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">pico2wave</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.PLAYER_DIALOG,{&quot;backend&quot;:&quot;pico2wave&quot;})</data>
+					</control>
+				</setting>
+				<setting id="speed.pico2wave" type="integer" label="32009" help="" parent="backend">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>20</minimum>
+						<maximum>200</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.pico2wave">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-1,mplayer)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">pico2wave</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.pico2wave" type="integer" label="32010" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.pico2wave">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-2,mplayer) </condition>
+								<condition on="property" name="InfoBool"> eq(-2,paplay)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">pico2wave</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- Cepstral -->
+				<setting id="voice.Cepstral" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Cepstral</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;Cepstral\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="use_aoss.Cepstral" type="boolean" label="32017" help="" parent="backend">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Cepstral</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="speed.Cepstral" type="integer" label="32011" help="" parent="backend">
+					<level>0</level>
+					<default>170</default>
+					<constraints>
+						<minimum>80</minimum>
+						<maximum>450</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Cepstral</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="pitch.Cepstral" type="integer" label="32005" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-6</minimum>
+						<maximum>14</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Cepstral</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.Cepstral" type="integer" label="32010" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Cepstral</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- OSX Say -->
+				<!-- Reverted to old OSXSay hander (for now) which doesn't have these -->
+				<setting id="voice.OSXSay" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;OSXSay\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="speed.OSXSay" type="integer" label="32011" help="" parent="backend">
+					<level>0</level>
+					<default>200</default>
+					<constraints>
+						<minimum>80</minimum>
+						<maximum>450</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.OSXSay" type="integer" label="32014" help="" parent="backend">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>0</minimum>
+						<maximum>100</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="percentage">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- Festival -->
+				<setting id="voice.Festival" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Festival</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;Festival\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="player.Festival" type="string" label="32007" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Festival</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.PLAYER_DIALOG,{&quot;backend&quot;:&quot;Festival&quot;})</data>
+					</control>
+				</setting>
+				<setting id="speed.Festival" type="integer" label="32006" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-16</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Festival</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="pitch.Festival" type="integer" label="32005" help="" parent="backend">
+					<level>0</level>
+					<default>105</default>
+					<constraints>
+						<minimum>50</minimum>
+						<maximum>500</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Festival</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.Festival" type="integer" label="32010" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Festival</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- Google (Dead)-->
+				<setting id="language.Google" type="string" label="32016" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;Google\&quot;,\&quot;language\&quot;]&quot;)</data>
+			</control>
+				</setting>
+				<setting id="player.Google" type="string" label="32007" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.PLAYER_DIALOG,{&quot;backend&quot;:&quot;Google&quot;})</data>
+					</control>
+				</setting>
+				<setting id="pipe.Google" type="boolean" label="32013" help="" parent="backend">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="volume.Google" type="integer" label="32010" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.Google">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-2,mplayer) </condition>
+								<condition on="property" name="InfoBool"> eq(-2,afplay)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">false</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+
+				<!-- Speech Dispatcher -->
+				<setting id="module.Speech-Dispatcher" type="string" label="32018" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Speech-Dispatcher</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;Speech-Dispatcher\&quot;,\&quot;module\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.Speech-Dispatcher" type="string" label="32003" help="" parent="backend">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Speech-Dispatcher</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;Speech-Dispatcher\&quot;,\&quot;voice\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="speed.Speech-Dispatcher" type="integer" label="32006" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-100</minimum>
+						<maximum>100</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Speech-Dispatcher</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="pitch.Speech-Dispatcher" type="integer" label="32005" help="" parent="backend">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-100</minimum>
+						<maximum>100</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Speech-Dispatcher</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="volume.Speech-Dispatcher" type="integer" label="32014" help="" parent="backend">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>0</minimum>
+						<maximum>200</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">Speech-Dispatcher</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="percentage">
+						<popup>false</popup>
+					</control>
+				</setting>
+			</group>
+			<group id="2" label="32019">
+				<setting id="perl_server.ttsd" type="boolean" label="32020" help="" parent="">
+					<level>0</level>
+					<default>true</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="speak_on_server.ttsd" type="boolean" label="32021" help="" parent="">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="perl_server.ttsd">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+
+				<!-- ttsd -->
+				<setting id="engine.ttsd" type="string" label="32001" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="perl_server.ttsd">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;engine\&quot;]&quot;)</data>
+				</control>
+				</setting>
+				<setting id="voice.Flite.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-3,false) </condition>
+								<condition on="property" name="InfoBool"> eq(-1,Flite)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;voice.Flite\&quot;,\&quot;Flite\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.eSpeak.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-4,false) </condition>
+								<condition on="property" name="InfoBool"> eq(-2,eSpeak)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;voice.eSpeak\&quot;,\&quot;eSpeak\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.SAPI.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-5,false) </condition>
+								<condition on="property" name="InfoBool"> eq(-3,SAPI)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;voice.SAPI\&quot;,\&quot;SAPI\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.Cepstral.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-6,false) </condition>
+								<condition on="property" name="InfoBool"> eq(-4,Cepstral)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;voice.Cepstral\&quot;,\&quot;Cepstral\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.OSXSay.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-7,false) </condition>
+								<condition on="property" name="InfoBool"> eq(-5,OSXSay)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;voice.OSXSay\&quot;,\&quot;OSXSay\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.Festival.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-8,false) </condition>
+								<condition on="property" name="InfoBool"> eq(-6,Festival)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.SETTING_DIALOG,&quot;[\&quot;ttsd\&quot;,\&quot;voice.Festival\&quot;,\&quot;Festival\&quot;]&quot;)</data>
+					</control>
+				</setting>
+				<setting id="voice.ttsd" type="string" label="32003" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible">
+							<and>
+								<condition operator="is" setting="backend">ttsd</condition>
+								<condition on="property" name="InfoBool"> eq(-9,true)</condition>
+							</and>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>RunScript(service.xbmc.tts,voice_dialog,ttsd)</data>
+					</control>
+				</setting>
+				<setting id="remote_speed.ttsd" type="integer" label="32022" help="" parent="">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-20</minimum>
+						<maximum>20</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="engine.ttsd">eSpeak</condition>
+								<condition on="property" name="InfoBool"> eq(-8,SAPI) </condition>
+								<condition on="property" name="InfoBool"> eq(-8,pico2wave) </condition>
+								<condition on="property" name="InfoBool"> eq(-8,Festival)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="remote_pitch.ttsd" type="integer" label="32023" help="" parent="">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-50</minimum>
+						<maximum>50</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="engine.ttsd">eSpeak</condition>
+								<condition on="property" name="InfoBool"> eq(-9,Festival) </condition>
+								<condition on="property" name="InfoBool"> eq(-9,SAPI)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="remote_volume.ttsd" type="integer" label="32024" help="" parent="">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="perl_server.ttsd">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+			</group>
+			<group id="3" label="32007">
+				<setting id="player.ttsd" type="string" label="32007" help="" parent="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="speak_on_server.ttsd">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<data>NotifyAll(service.xbmc.tts,SETTINGS.PLAYER_DIALOG,{&quot;backend&quot;:&quot;ttsd&quot;})</data>
+					</control>
+				</setting>
+				<setting id="pipe.ttsd" type="boolean" label="32013" help="" parent="">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="speak_on_server.ttsd">false</condition>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="player_speed.ttsd" type="integer" label="32025" help="" parent="">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>20</minimum>
+						<maximum>200</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.ttsd">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-2,mplayer) </condition>
+								<condition on="property" name="InfoBool"> eq(-2,afplay)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="player_volume.ttsd" type="integer" label="32026" help="" parent="">
+					<level>0</level>
+					<default>0</default>
+					<constraints>
+						<minimum>-12</minimum>
+						<maximum>12</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<or>
+								<condition operator="is" setting="player.ttsd">sox</condition>
+								<condition on="property" name="InfoBool"> eq(-3,mplayer) </condition>
+								<condition on="property" name="InfoBool"> eq(-3,paplay) </condition>
+								<condition on="property" name="InfoBool"> eq(-3,afplay)</condition>
+							</or>
+						</dependency>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+			</group>
+			<group id="4" label="Connection">
+				<setting id="host.ttsd" type="string" label="32027" help="" parent="">
+					<level>0</level>
+					<default>127.0.0.1</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="edit" format="ip">
+						<heading>32027</heading>
+					</control>
+				</setting>
+				<setting id="port.ttsd" type="integer" label="32028" help="" parent="">
+					<level>0</level>
+					<default>8256</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="backend">ttsd</condition>
+						</dependency>
+					</dependencies>
+					<control type="edit" format="integer">
+						<heading>32028</heading>
+					</control>
+				</setting>
+			</group>
+		</category>
+		<category id="options" label="32029" help="">
+			<group id="1">
+				<setting id="reader_off" type="boolean" label="32032" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="auto_item_extra" type="boolean" label="32033" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="auto_item_extra_delay" type="integer" label="32034" help="" parent="auto_item_extra">
+					<level>0</level>
+					<default>2</default>
+					<constraints>
+						<minimum>1</minimum>
+						<maximum>60</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="auto_item_extra">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="speak_list_count" type="boolean" label="32035" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="speak_background_progress" type="boolean" label="32036" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="background_progress_interval" type="integer" label="32037" help="" parent="speak_background_progress">
+					<level>0</level>
+					<default>5</default>
+					<constraints>
+						<minimum>0</minimum>
+						<maximum>60</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="speak_background_progress">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="speak_background_progress_during_media" type="boolean" label="32038" help="" parent="speak_background_progress">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="speak_background_progress">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+			</group>
+		</category>
+		<category id="keymap" label="32030" help="">
+			<group id="1">
+				<setting id="ACTION_KEYMAP_INSTALL_DEFAULT" type="action" label="32039" help="">
+					<level>0</level>
+					<data>RunScript(service.xbmc.tts,keymap.INSTALL_DEFAULT)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action"/>
+				</setting>
+				<setting id="ACTION_KEYMAP_INSTALL_CUSTOM" type="action" label="32040" help="">
+					<level>0</level>
+					<data>RunScript(service.xbmc.tts,keymap.INSTALL_CUSTOM)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action"/>
+				</setting>
+				<setting id="ACTION_KEYMAP_EDIT" type="action" label="32041" help="">
+					<level>0</level>
+					<data>RunScript(service.xbmc.tts,keymap.EDIT)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action"/>
+				</setting>
+				<setting id="ACTION_KEYMAP_RESET" type="action" label="32042" help="">
+					<level>0</level>
+					<data>RunScript(service.xbmc.tts,keymap.RESET)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action"/>
+				</setting>
+				<setting id="ACTION_KEYMAP_REMOVE" type="action" label="32043" help="">
+					<level>0</level>
+					<data>RunScript(service.xbmc.tts,keymap.REMOVE)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="button" format="action"/>
+				</setting>
+			</group>
+		</category>
+		<category id="advanced" label="32031" help="">
+			<group id="1">
+				<setting id="use_tmpfs" type="boolean" label="32044" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="disable_broken_backends" type="boolean" label="32045" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="debug_logging" type="boolean" label="32046" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="verbose_logging" type="boolean" label="32049" help="" parent="debug_logging">
+					<level>0</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="debug_logging">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="override_poll_interval" type="boolean" label="32047" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="poll_interval" type="integer" label="32048" help="" parent="override_poll_interval">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>50</minimum>
+						<maximum>1000</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="override_poll_interval">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+			</group>
+		</category>
+	</section>
+</settings>

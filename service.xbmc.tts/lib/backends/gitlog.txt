@@ -1,0 +1,506 @@
+commit 13eb8b53fb77e078f24cf8cbdeec9b7890d8270d
+Author: Peter Vágner <pvdeejay@gmail.com>
+Date:   Sun Jun 8 09:55:52 2014 +0200
+
+    Workaround a speech-dispatcher issue where voice is sometimes reset to
+    default module voice when multiple apps are speaking through
+    speech-dispatcher. Setting the language before setting the voice appears
+    to help in this case.
+
+commit 63f4e66e5e64c2277f7a408f8b2a905302237dd9
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat Jun 7 16:49:05 2014 -0700
+
+    Added code to load snd-bcm2835 module for other Raspberry Pi distributions
+    Will now check for and load snd-bcm2835 module for all players/engines if needed
+
+commit ef6bb8b0657ea646dea7f96fd3117546e38c2730
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Jun 5 09:14:19 2014 -0700
+
+    Change SimpleTTSBackendBaseAudioHandler.players() to classmethod
+    Make audio piping work better with non-file objects
+    Add audio piping to paplay, MPlayer,sox, mpg123, mpg321
+    Add ability to pipe mp3 data to Google
+    Add ability to pipe wavs on speech server
+
+commit 024ec17d822cb161e8cb9cb08b2b0c619c238081
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Jun 5 05:49:58 2014 -0700
+
+    Fix loading of snd_bm2835 on OpenElec
+
+commit df88052d78567f2515d20b0e959f3a48cc74bda8
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Jun 5 05:12:07 2014 -0700
+
+    Create PIPE mode and handle audio pipes like WAVOUT and ENGINESPEAK
+    Clean up eSpeak to simplify different mode handling
+
+commit 2e26d7c8e168d0a697a01508b8cd84c1ef5d9b30
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Jun 4 19:17:14 2014 -0700
+
+    Update comtypes to 1.1.0
+    Enable piping audio to audio backends
+    Enable piping audio from eSpeak
+    Fix for flite not setting player on change
+    Add modprobing snd_bm2835 on RPI OpenElec for aplay
+
+commit 54eb586aaa6f37b7b4a7c2200f1ae6aad7597894
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Jun 2 13:32:44 2014 -0700
+
+    Added deadReson to backend base
+    Added flagAsDead() to backend base
+    Change self.speed to self.remote_speed in perl server handling for speech_server
+    Use new dead handling from base for speech_server
+
+commit 5c2e9d9a67f6d5c2ca0b849fbe764a6bdf5a229c
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 31 11:37:52 2014 -0700
+
+    Added volume scaling to backends
+    Added volume constraints to SAPI
+
+commit 0d92c8c854f31fe0af015bd980cfec085b7d7693
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 31 11:21:46 2014 -0700
+
+    Fix for errors when removing speech files
+    Add pitch for SAPI and use SSML to set pitch, speed and volume
+
+commit 315c325b51b780bccca4a839da8491f31e5ebf04
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Fri May 30 13:54:38 2014 -0700
+
+    Fix Festival speed constraint
+
+commit 34a876d9b66abc9aae94e0eef1c28b8479002e9b
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Fri May 30 13:49:20 2014 -0700
+
+    Add constraints for pitch and speed to Festival
+
+commit 8526a462b2db26baa7b93fe22d6ffce4397d2cf4
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Fri May 30 13:42:53 2014 -0700
+
+    Festival now uses SimpleTTSBackendBase
+    Added player and pitch settings for Festival
+
+commit 2f8bbb1de3f1a29a9e4764740ecbe000a78e8f7d
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu May 29 10:58:18 2014 -0700
+
+    Add pitch to speech server
+
+commit 6324b08de3fe3f03d63e143286f2b0e5e382c712
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed May 28 17:03:25 2014 -0700
+
+    Fix value scaling
+    Fix pitch arg setting in espeak
+    Add pitch setting in speech server backend
+
+commit a6e027996975421fbbe3d48271520cdfd300c868
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed May 28 16:32:27 2014 -0700
+
+    Combine speed and pitch scaline and make more versatile
+
+commit 9080f8ae6b5b41adc6112299c1e3b436b8e5867b
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 27 16:53:53 2014 -0700
+
+    Add remote_speed and player_speed to replace speed
+
+commit 2a2698d746b7cf18f56e52bcc391fec320efe400
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 27 16:10:42 2014 -0700
+
+    Rename sjhttsd.py speech_server.py
+    Change class name from SJHttsdTTSBackend to SpeechServerBackend
+
+commit 64b7e38ec4d7f52136e7d3edf7b6b89076ce659b
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 27 15:24:48 2014 -0700
+
+    Add volume to http backend
+    Always set espeak volume via espeak engine and make setting always enabled
+
+commit c3e4620e46e13c4bc87463dc4d54da662b3d4bb8
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 27 14:04:34 2014 -0700
+
+    Remove logging of playSFX info from audio backend
+
+commit 67b3c68725ef8b291536c0e5225f3c2aa8e0104e
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon May 26 16:10:49 2014 -0700
+
+    Have base tts class inherit from object
+    Create proper return for osxsay __new__
+
+commit 6607f11d59b5fb9821e04f742bc30db34814016d
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon May 26 15:43:49 2014 -0700
+
+    Have osxsay use old class for server
+
+commit 41f053889f5cdedf39cf806b7e2398a3d7c48071
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon May 26 15:31:52 2014 -0700
+
+    Fix warning message in asyncconnections
+
+commit df4e655cf90f675f908c9f81533f7de933664eb1
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon May 26 03:44:37 2014 -0700
+
+    Remove xbmc import in asyncconnections and use util.abortRequested() instead
+
+commit 1c2913b732156779e152dea65802f0ee0d3927d3
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun May 25 17:50:44 2014 -0700
+
+    Add afplay: wav and mp3 player for OSX
+    Fix bug causing errors on some backends
+    Modify Cepstral for slight performance improvement
+
+commit 5d7e8939521db19c3b249eaaaf8503e60dcb2134
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 24 17:57:06 2014 -0700
+
+    Re-structure audio backend
+    Fix windows audio player
+
+commit 3fe39996f57988bccc3c1857979eaff304fb3435
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 24 11:18:01 2014 -0700
+
+    Change Speech Dispatcher default volume to 100
+    Add setVolume() to PlayerHandler class
+
+commit a4f4da065a8d7a475e908cc050e4eba0887d0cfd
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Fri May 23 10:37:49 2014 -0700
+
+    Added ability to set volume with paplay
+    Added volume to pico2wave
+    Added volume to eSpeak
+    Added rate, pitch and volume to Cepstral
+    Added speed and volume to Festival
+    Added rate and volume to OSXSay
+    Added module, voice, speed, pitch and volume to Speech-Dispatcher
+    Added player, speed and volume to Flite
+
+commit 594dede60eb6dcb1f919c13bbc09c24a0378066a
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu May 22 09:41:31 2014 -0700
+
+    Fix for SAPI to set Volume attribute rather that SetVolume for backwards compatability
+
+commit 6bdf01b86b4138f1dccf770be24becb0842f7c4a
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu May 22 09:34:20 2014 -0700
+
+    Fix error on Google backend on windows caused by speed and volume additions
+    Fix error on Google backend when language not set
+    Added volume on SAPI
+
+commit da5ed6f2801380ea29ba9e73876249712a0c56de
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed May 21 16:36:50 2014 -0700
+
+    Use asyncconnections for speechutil
+    Add ability to set player volume
+    Add language selection to Google
+    Add player selection to Google
+    Add player selection to pico2wave
+
+commit c60f88c5a81c55304fb151211d88e7fd4c2ea3a4
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 20 16:05:06 2014 -0700
+
+    change festival id
+
+commit ea51c5fcfbb662b8c39a4d4e9560404a504f1264
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 20 15:48:33 2014 -0700
+
+    Use cocoapy to access OSX say
+    Add voice selection to OSXSay
+    Remove voice and language specific selection framework
+    Change settingList() to @classmethod and adjust all backends
+
+commit 10bbad1922285247a23d42e1f15c91955260ff7d
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 17 16:35:20 2014 -0700
+
+    Added speechutil.com backend
+
+commit 65372d3b523ff518e4251719d078cdcf8be6549b
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 17 14:16:14 2014 -0700
+
+    Add wav output to osxsay
+
+commit ce93ec066e211ff87eb1debcc54f50c336630ba3
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu May 15 11:04:15 2014 -0700
+
+    Moved audio.py to folder audio
+    Added windows audio player
+    Added MP3Player more platform agnostic
+    Fix Google backend so it can use windows player as well
+
+commit 663aa20d7273375182c80819f8171f7c04d1c199
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed May 14 18:56:23 2014 -0700
+
+    Fix fir errors on non-ascii characters in text
+
+commit 5eeafbc9a17d6321a44eaec222f11b4214c3f0b2
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sat May 10 16:16:05 2014 -0700
+
+    Fir for comtypes not importing properly
+
+commit ad30b57c970860c15a9b80cc83beb9b4b7278998
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed May 7 22:57:34 2014 -0700
+
+    Convert text to ssml to avoid errors
+
+commit bd6ffdaee87a144a1e2f49ba88a4c34a52f5ed09
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed May 7 22:25:29 2014 -0700
+
+    Fix for SAPI error on <
+
+commit c5133c53a9a9d5b5be691e1587de64d752cf7232
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue May 6 12:24:46 2014 -0700
+
+    Fixes for Cepstral showing a terminal on windows (again)
+    Added some code to reset SAPI on error and LOG the occuranceFix
+
+commit 5f829586f2c8a39332dfcb49a9eb61a2fc0ed11f
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon May 5 16:41:23 2014 -0700
+
+    Remove mpg123 from wav player
+
+commit 98c4d9a58b0d37dacf86c7ff18fce80dcb0afc1e
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon May 5 16:10:28 2014 -0700
+
+    Set canStreamWav to false for cepstral and sjhttsd
+
+commit 4d9f97ec2a97d142b87efa22d4d9bcb728189483
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun May 4 13:37:18 2014 -0700
+
+    Add ability to remove available backends
+
+commit 4d649975cbf982d5bcd51bab67342134d72264ee
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun May 4 13:22:24 2014 -0700
+
+    Wait for subprocess to complete when converting mp3 to wav
+
+commit a712167ed88f479e1dbb0e093b25df1a895504f4
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun May 4 13:02:47 2014 -0700
+
+    Google fix
+
+commit 8e1b37ebc642840f562c8aad2b57aca9c0d5b9f9
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun May 4 12:58:43 2014 -0700
+
+    Add mpg123 support
+    Add MP3Player
+    Add UnixExternalMP3PlayerHandler
+    Improve Google backend to better detect available mp3 players
+
+commit 0eb61b1032528c1e5628ab4d570146147eef8a7b
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Fri May 2 12:40:11 2014 -0700
+
+    Fixes for HTTP backend to work with perl server again
+
+commit 41265d8cfff955196841290e0cd7f7e01d12a808
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 16:35:15 2014 -0700
+
+    Remove testing print statement
+
+commit 3c57ed37927f07e7c65a2faeb691d3398d06812f
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 16:02:24 2014 -0700
+
+    Fix stupidity
+
+commit c4e3bd01d7c71aec5d3b716a5016c658036a048f
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 16:00:00 2014 -0700
+
+    Put the 'with' handling in the base class dummy!
+
+commit 7367558629f96f4e1abfeaa0d70aea5d19421a5f
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 15:57:06 2014 -0700
+
+    Add with handling to backends
+    When getting voices, etc from backend, use with to ensure closing of backend
+
+commit 6017a80f3b8b0de87a6140f49a1683ae1c225010
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 15:42:23 2014 -0700
+
+    Fix syntax error
+
+commit 836040fa8df4d01000ebb5814a31114ccee3606e
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 15:41:09 2014 -0700
+
+    Added player setting to pico2wave
+
+commit e2f418a4280592c73194f31db6f2cdcac2eb3a2a
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 15:16:09 2014 -0700
+
+    Add ability to set SAPI rate
+    Added speed definitions to pico2wave
+
+commit 7cdf9b4aef6f4fde97b3d05bbe9129f09a31e468
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 15:05:15 2014 -0700
+
+    Fix speed scaling
+
+commit e1ee2a8536b82466984c605dcc79085f8e1d4e3a
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 15:01:34 2014 -0700
+
+    Add speed definitions for SAPI
+
+commit 9bdedb9ec86c039f8462b9e67e09766301f4254c
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 14:59:53 2014 -0700
+
+    Change speed scaling method
+
+commit c35831391941f82ad8022e65b9db7e475d96e484
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 13:30:04 2014 -0700
+
+    Fix for speed scaling
+    Fix for sjhttsd not processing speed of 0
+
+commit 848eec8e81ed5d24dd66b498ea0386a046bc0b38
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Wed Apr 30 13:17:40 2014 -0700
+
+    Add speed scaling to backends
+    Added the ability to pass args to settingsList
+
+commit 9719be05dfa8d269b4e678e3fb27e07740d03081
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Apr 28 18:01:28 2014 -0700
+
+    Fix for aoss usage
+    Google now only shows available when mplayer is available
+
+commit 2c3f6837cdbf52119da48ac82f96b5bcb88b46a5
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Apr 28 15:04:03 2014 -0700
+
+    Suppress audio subprocess output when checking availability
+
+commit dabb2bcd36b00f16c0a73b45122ef04b696fea81
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Apr 28 15:01:39 2014 -0700
+
+    Suppress audio subprocess output
+
+commit 6d8974bd649dfa2f661833658468a99ba7f62584
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Apr 28 14:57:44 2014 -0700
+
+    Fix sjhttsd
+    Reduce logging when changing SimpleTTSBackendBase mode
+
+commit bc5dbf870df4827b1767f380b3fe91b80a85fa26
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Apr 28 13:57:41 2014 -0700
+
+    Move Cepstral down in priority
+    Add use_aoss setting to Cepstral
+
+commit cdd6a9aa187feb59649192ce88beba653ab0fee9
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Mon Apr 28 13:21:49 2014 -0700
+
+    Fix for missing self in runCommand
+    Fix for Cepstral showing termingal on windows
+    Add google HTTP speech server backend
+    Add remote speaking to sjhttsd backend
+
+commit 49cfecd6390826e1951625b3f674c07f9855ac72
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun Apr 27 13:46:10 2014 -0700
+
+    Fix sjhttsd to handle perl server properly again
+
+commit b013991198eaf1e62d8d290e0289bed8a1b0d747
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Sun Apr 27 12:38:57 2014 -0700
+
+    Add getWavStream to SAPI
+    Add Cepstral backend
+
+commit 0e1b6028a80ccc8c44e38a205c231c33411345ef
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Fri Apr 25 15:28:55 2014 -0700
+
+    For old playSFX(), hash filenames instead of use time.time()
+    Add getWavStream() to SAPI (Untested)
+
+commit 87bfd82bbe7f7ea681a4d8849202c8dbd9500a84
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Apr 24 14:22:30 2014 -0700
+
+    Syntax fix
+
+commit 58da04390f7794e2d6b215a0dda9ec28141b7202
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Apr 24 14:09:35 2014 -0700
+
+    Backend changes for wav stream output
+
+commit 3cefe79953515fa5212e2145d688e92e18d07313
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Apr 24 14:05:17 2014 -0700
+
+    Move dialogs out out to frontend
+
+commit ccde38902f28dd25afb3e9c41ff94c4cd239cef0
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Thu Apr 24 11:59:29 2014 -0700
+
+    Include comtypes
+
+commit 6fc2df2b2d60fb0c78437825e79eaf5fbb85b73c
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue Apr 22 11:59:13 2014 -0700
+
+    Test
+
+commit 1d681f884e3a3f7829b9850795105beabd9e0fcc
+Author: ruuk <xbmc@2ndmind.net>
+Date:   Tue Apr 22 10:53:53 2014 -0700
+
+    First commit

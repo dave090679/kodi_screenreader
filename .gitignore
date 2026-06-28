@@ -1,0 +1,17 @@
+*.build
+*.buildinfo
+*.changes
+*.deb
+*.rpm
+*.src.rpm
+
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/kodi-screenreader/
+debian/*.substvars
+
+rpmbuild/BUILD/
+rpmbuild/RPMS/
+rpmbuild/SRPMS/
+rpmbuild/SOURCES/*.tar.gz
