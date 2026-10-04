@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>Kodi Screenreader</title>
+    <welcome file="welcome.html" mime-type="text/html"/>
+    <conclusion file="conclusion.html" mime-type="text/html"/>
+    <license file="LICENSE.txt"/>
+    <options customize="never" require-scripts="false" hostArchitectures="arm64,x86_64"/>
+    <domains enable_localSystem="true" enable_anywhere="false" enable_currentUserHome="false"/>
+    <installation-check script="checkKodi()"/>
+    <script><![CDATA[
+function kodiInstalled() {
+    if (system.applications.fromIdentifier('org.xbmc.kodi')) return true;
+    return system.files.fileExistsAtPath('/Applications/Kodi.app');
+}
+
+function kodiRunning() {
+    var apps = system.applications.all();
+    for (var i = 0; i < apps.length; i++) {
+        if (apps[i].bundleIdentifier == 'org.xbmc.kodi') return true;
+    }
+    return false;
+}
+
+function checkKodi() {
+    if (!kodiInstalled()) {
+        my.result.type = 'Fatal';
+        my.result.title = system.localizedString('KODI_MISSING_TITLE');
+        my.result.message = system.localizedString('KODI_MISSING_MESSAGE');
+        return false;
+    }
+    if (kodiRunning()) {
+        my.result.type = 'Fatal';
+        my.result.title = system.localizedString('KODI_RUNNING_TITLE');
+        my.result.message = system.localizedString('KODI_RUNNING_MESSAGE');
+        return false;
+    }
+    return true;
+}
+    ]]></script>
+    <choices-outline>
+        <line choice="default"/>
+    </choices-outline>
+    <choice id="default" title="Kodi Screenreader">
+        <pkg-ref id="de.dave090679.kodi-screenreader"/>
+    </choice>
+    <pkg-ref id="de.dave090679.kodi-screenreader" version="__VERSION__" onConclusion="none">kodi-screenreader-component.pkg</pkg-ref>
+</installer-gui-script>

@@ -1,47 +1,52 @@
 # -*- coding: utf-8 -*-
 import base
+import os
 import subprocess
 import sys
 from lib import util
 
+# Text is passed as an argument instead of being formatted into the script,
+# so quotes and backslashes need no escaping.
+_OUTPUT_SCRIPT = [
+    '-e', 'on run argv',
+    '-e', 'set spokenText to item 1 of argv',
+    '-e', 'tell application "VoiceOver" to output spokenText',
+    '-e', 'end run',
+]
+
+# Created by macOS when "Allow VoiceOver to be controlled with AppleScript" is enabled
+_APPLESCRIPT_ENABLED_FLAG = '/private/var/db/Accessibility/.VoiceOverAppleScriptEnabled'
+
+
 class VoiceOverBackend(base.SimpleTTSBackendBase):
+    """Sends text to a running VoiceOver.
+
+    Requires "Allow VoiceOver to be controlled with AppleScript" in VoiceOver Utility.
+    """
     provider = 'voiceover'
     displayName = 'VoiceOver'
+    canStreamWav = False
 
     def init(self):
         self.setMode(base.SimpleTTSBackendBase.ENGINESPEAK)
 
-    def runCommandAndSpeak(self,text):
-        subprocess.call(['osascript', '-e', 'tell application "voiceover" to output "{0}"'.format(text.replace('"','').encode('utf-8'))])
+    def _output(self, text):
+        try:
+            subprocess.call(['osascript'] + _OUTPUT_SCRIPT + ['--', text])
+        except Exception:
+            util.ERROR('VoiceOver: osascript failed', hide_tb=True)
+
+    def runCommandAndSpeak(self, text):
+        self._output(text)
 
     def stop(self):
-        subprocess.call(['osascript', '-e', 'tell application "voiceover" to output ""'])
+        self._output('')
 
     @staticmethod
     def available():
-        return sys.platform == 'darwin' and not util.isATV2()
-
-#on isVoiceOverRunning()
-#	set isRunning to false
-#	tell application "System Events"
-#		set isRunning to (name of processes) contains "VoiceOver"
-#	end tell
-#	return isRunning
-#end isVoiceOverRunning
-#
-#on isVoiceOverRunningWithAppleScript()
-#	if isVoiceOverRunning() then
-#		set isRunningWithAppleScript to true
-#
-#		-- is AppleScript enabled on VoiceOver --
-#		tell application "VoiceOver"
-#			try
-#				set x to bounds of vo cursor
-#			on error
-#				set isRunningWithAppleScript to false
-#			end try
-#		end tell
-#		return isRunningWithAppleScript
-#	end if
-#	return false
-#end isVoiceOverRunningWithAppleScript
+        if sys.platform != 'darwin' or util.isATV2(): return False
+        if not os.path.exists(_APPLESCRIPT_ENABLED_FLAG): return False
+        try:
+            return subprocess.call(['pgrep', '-xq', 'VoiceOver']) == 0
+        except Exception:
+            return False
