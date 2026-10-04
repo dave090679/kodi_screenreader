@@ -12,6 +12,9 @@ from base import ThreadedTTSBackend
 #   "Anna (Deutsch (Deutschland)) de_DE    # Hallo! Ich heiße Anna."     (macOS 14+)
 _VOICE_LINE_RE = re.compile(r'^(?P<name>.+?)\s+(?P<locale>[a-z]{2,3}(?:[_-][A-Za-z0-9]+)*)\s+#')
 _LANG_SUFFIX_RE = re.compile(r'\s*\((?:[^()]|\([^()]*\))*\)$')
+# The service uses '...' as a pause marker; `say` reads it as "dot" at the start of an utterance
+_PAUSE_RE = re.compile(r'\s*\.{2,}\s*')
+_PAUSE = ' [[slnc 250]] '
 
 
 class OSXSayTTSBackend(ThreadedTTSBackend):
@@ -54,6 +57,9 @@ class OSXSayTTSBackend(ThreadedTTSBackend):
             args += ['-r', str(self.rate)]
         if out_file:
             args += ['-o', out_file, '--file-format=WAVE', '--data-format=LEI16@22050']
+        text = _PAUSE_RE.sub(_PAUSE, text).strip()
+        if text.startswith('[[slnc'):
+            text = text[len(_PAUSE.strip()):].strip()
         if self.volume is not None and self.volume < 100:
             # `say` has no volume option, but honours the embedded speech command [[volm]]
             text = '[[volm {0:.2f}]] {1}'.format(max(self.volume, 0) / 100.0, text)
