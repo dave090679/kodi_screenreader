@@ -1,8 +1,8 @@
-# Kodi Screenreader - Build Files für Linux (Debian & Arch)
+# Kodi Screenreader - Build Files für Linux (Debian, Arch & RPM)
 
 ## Übersicht
 
-Dieses Paket enthält alle notwendigen Build-Dateien zur Erstellung von Installationspaketen für Debian/Ubuntu und Arch Linux Distributionen.
+Dieses Paket enthält alle notwendigen Build-Dateien zur Erstellung von Installationspaketen für Debian/Ubuntu, Arch Linux und RPM-basierte Distributionen.
 
 **Komponenten:**
 - **service.xbmc.tts** - Hauptscreenreader-Service
@@ -10,6 +10,7 @@ Dieses Paket enthält alle notwendigen Build-Dateien zur Erstellung von Installa
 - **ruuk.addon.repository** - Addon-Repository
 - **service.xbmc.tts.keyboard.xml** - Tastaturkonfiguration
 - **ENABLED** - Aktivierungsflag
+- **kodi_screenreader.spec** - RPM-Spec-Datei für Builds direkt aus dem Checkout
 
 ---
 
@@ -87,6 +88,26 @@ makepkg
 ```
 
 Die Datei `kodi-screenreader-1.0.0-1-any.pkg.tar.zst` wird erstellt.
+
+---
+
+## RPM Build
+
+### 1. Abhängigkeiten installieren
+
+```bash
+# Fedora
+sudo dnf install rpm-build kodi python3
+```
+
+### 2. Paket bauen
+
+```bash
+cd kodi_screenreader
+rpmbuild -ba ./kodi_screenreader.spec
+```
+
+Die Spec-Datei kopiert alle benötigten Dateien direkt aus dem ausgecheckten Repository.
 
 ---
 
@@ -224,4 +245,3 @@ Die Dateien werden mit korrekten Lizenzen verpackt.
 - [Debian Packaging Manual](https://www.debian.org/doc/manuals/debmake-doc/)
 - [Arch Linux Packaging](https://wiki.archlinux.org/title/PKGBUILD)
 - [Kodi Add-on Development](https://kodi.wiki/view/Add-on_development)
-

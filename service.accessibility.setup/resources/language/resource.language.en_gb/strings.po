@@ -1,0 +1,59 @@
+# Kodi Media Center language file
+# Addon id: service.accessibility.setup
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en_GB\n"
+
+msgctxt "#30000"
+msgid "Accessibility setup"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Accessible skin (home menu with Enter only, kept up to date)"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Accessible Kodi settings"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Public TV and radio channels"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Favourites for streaming add-ons"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Address of the channel list"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Home menu tidied up"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Accessible settings applied"
+msgstr ""
+
+msgctxt "#30102"
+msgid "TV and radio channels set up"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Favourites added"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Kodi has been set up for the screen reader:"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Run the accessibility setup again? Home menu, settings, channels and favourites are set up again."
+msgstr ""
+
+msgctxt "#30106"
+msgid "Nothing to do, everything is already set up."
+msgstr ""
+

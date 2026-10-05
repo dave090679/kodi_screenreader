@@ -56,13 +56,17 @@ override_dh_auto_install:
 	mkdir -p debian/kodi-screenreader/usr/share/kodi/addons/script.module.nvdacontrollerclient
 	
 	# Copy service.xbmc.tts files
-	cp -r service.xbmc.tts/* debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts/ 2>/dev/null || true
+	cp -a service.xbmc.tts/. debian/kodi-screenreader/usr/share/kodi/addons/service.xbmc.tts/
 	
 	# Copy repository addon
-	cp -r ruuk.addon.repository/* debian/kodi-screenreader/usr/share/kodi/addons/ruuk.addon.repository/
+	if [ -d ruuk.addon.repository ]; then \
+		cp -a ruuk.addon.repository/. debian/kodi-screenreader/usr/share/kodi/addons/ruuk.addon.repository/; \
+	fi
 	
 	# Copy NVDA controller client
-	cp -r script.module.nvdacontrollerclient/* debian/kodi-screenreader/usr/share/kodi/addons/script.module.nvdacontrollerclient/
+	if [ -d script.module.nvdacontrollerclient ]; then \
+		cp -a script.module.nvdacontrollerclient/. debian/kodi-screenreader/usr/share/kodi/addons/script.module.nvdacontrollerclient/; \
+	fi
 	
 	# Copy keyboard mappings
 	mkdir -p debian/kodi-screenreader/etc/kodi/userdata/keymaps
@@ -235,17 +239,20 @@ package() {
     
     # Install service.xbmc.tts
     if [ -d "service.xbmc.tts" ]; then
-        cp -r service.xbmc.tts "${pkgdir}/usr/share/kodi/addons/"
+        install -dm755 "${pkgdir}/usr/share/kodi/addons/service.xbmc.tts"
+        cp -a service.xbmc.tts/. "${pkgdir}/usr/share/kodi/addons/service.xbmc.tts/"
     fi
     
     # Install repository addon
     if [ -d "ruuk.addon.repository" ]; then
-        cp -r ruuk.addon.repository "${pkgdir}/usr/share/kodi/addons/"
+        install -dm755 "${pkgdir}/usr/share/kodi/addons/ruuk.addon.repository"
+        cp -a ruuk.addon.repository/. "${pkgdir}/usr/share/kodi/addons/ruuk.addon.repository/"
     fi
     
     # Install NVDA controller client module
     if [ -d "script.module.nvdacontrollerclient" ]; then
-        cp -r script.module.nvdacontrollerclient "${pkgdir}/usr/share/kodi/addons/"
+        install -dm755 "${pkgdir}/usr/share/kodi/addons/script.module.nvdacontrollerclient"
+        cp -a script.module.nvdacontrollerclient/. "${pkgdir}/usr/share/kodi/addons/script.module.nvdacontrollerclient/"
     fi
     
     # Install keyboard mappings
