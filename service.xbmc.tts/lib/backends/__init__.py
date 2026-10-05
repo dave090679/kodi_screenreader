@@ -29,6 +29,7 @@ _load_backend('festival', 'FestivalTTSBackend')
 _load_backend('pico2wave', 'Pico2WaveTTSBackend')
 _load_backend('flite', 'FliteTTSBackend')
 _load_backend('osxsay', 'OSXSayTTSBackend')
+_load_backend('voiceover', 'VoiceOverBackend')
 _load_backend('sapi', 'SAPITTSBackend')
 _load_backend('espeak', 'ESpeakTTSBackend', 'ESpeakCtypesTTSBackend')
 _load_backend('speechdispatcher', 'SpeechDispatcherTTSBackend')
@@ -46,6 +47,7 @@ def _defined(*backend_classes):
 backendsByPriority = _defined(
     SAPITTSBackend,
     OSXSayTTSBackend,
+    VoiceOverBackend,
     TermuxTTSBackend,
     SpeechDispatcherTTSBackend,
     ESpeakTTSBackend,

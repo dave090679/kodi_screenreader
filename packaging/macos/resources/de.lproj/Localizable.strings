@@ -1,0 +1,4 @@
+"KODI_MISSING_TITLE" = "Kodi ist nicht installiert";
+"KODI_MISSING_MESSAGE" = "Bitte installiere zuerst Kodi von kodi.tv in den Programme-Ordner und starte den Installer dann erneut.";
+"KODI_RUNNING_TITLE" = "Kodi läuft noch";
+"KODI_RUNNING_MESSAGE" = "Bitte beende Kodi (Befehl+Q) und starte den Installer dann erneut.";

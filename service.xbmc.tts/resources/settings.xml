@@ -452,7 +452,6 @@
 				</setting>
 
 				<!-- OSX Say -->
-				<!-- Reverted to old OSXSay hander (for now) which doesn't have these -->
 				<setting id="voice.OSXSay" type="string" label="32003" help="" parent="backend">
 					<level>0</level>
 					<constraints>
@@ -460,7 +459,7 @@
 					</constraints>
 					<dependencies>
 						<dependency type="visible">
-							<condition on="property" name="InfoBool">false</condition>
+							<condition operator="is" setting="backend">OSXSay</condition>
 						</dependency>
 					</dependencies>
 					<control type="button" format="action">
@@ -476,7 +475,7 @@
 					</constraints>
 					<dependencies>
 						<dependency type="visible">
-							<condition on="property" name="InfoBool">false</condition>
+							<condition operator="is" setting="backend">OSXSay</condition>
 						</dependency>
 					</dependencies>
 					<control type="slider" format="integer">
@@ -492,7 +491,7 @@
 					</constraints>
 					<dependencies>
 						<dependency type="visible">
-							<condition on="property" name="InfoBool">false</condition>
+							<condition operator="is" setting="backend">OSXSay</condition>
 						</dependency>
 					</dependencies>
 					<control type="slider" format="percentage">
