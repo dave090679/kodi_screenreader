@@ -28,3 +28,25 @@ Uninstall:
 ```
 sudo "/Library/Application Support/Kodi Screenreader/uninstall.sh"
 ```
+
+## Accessibility setup (`service.accessibility.setup`)
+
+Companion add-on to the screen reader. On the first Kodi start it:
+
+- creates the skin **Estuary barrierefrei**, a copy of Kodi's Estuary where the home menu
+  is only left with Enter (Right no longer jumps into the widget row), and switches to it.
+  After a Kodi update with a new Estuary, the copy is rebuilt automatically.
+- hides home menu entries that would only open empty pages (movies, TV shows, music videos
+  without a library, TV and radio without a PVR add-on, games, weather without a provider).
+- turns on "prefer audio description", turns off the mouse and the ".." list entry,
+  and uses the German keyboard layout when Kodi runs in German.
+- adds the free live streams of the German public broadcasters (19 TV, 15 radio stations)
+  through IPTV Simple. The list is loaded daily from
+  `service.accessibility.setup/resources/channels/oeffentlich-rechtlich.m3u` in this repository,
+  so fixing a stream there updates every installation. Check the streams with
+  `python3 tools/check_streams.py` (from a German connection, most streams are geo-blocked).
+- adds favourites for installed streaming add-ons (MediathekView, ARD, ZDF, Joyn, YouTube,
+  Netflix, Amazon, radio.de, podcasts, Deutschlandfunk, WDR Audiothek).
+
+Every step runs once; changes made by the user afterwards are kept. Steps can be turned off
+in the add-on settings, and the whole setup can be run again from Add-ons > Program add-ons.

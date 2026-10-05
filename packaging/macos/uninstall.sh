@@ -4,6 +4,8 @@
 # Speech settings in userdata/addon_data/service.xbmc.tts are kept.
 
 ADDON_ID="service.xbmc.tts"
+SETUP_ADDON_ID="service.accessibility.setup"
+SKIN_ID="skin.estuary.barrierefrei"
 
 if [ "$(id -u)" -ne 0 ]; then
     echo "Bitte mit sudo ausfuehren / please run with sudo."
@@ -18,11 +20,11 @@ fi
 for home in /Users/*; do
     kodi="$home/Library/Application Support/Kodi"
     [ -d "$kodi" ] || continue
-    rm -rf "$kodi/addons/$ADDON_ID"
+    rm -rf "$kodi/addons/$ADDON_ID" "$kodi/addons/$SETUP_ADDON_ID" "$kodi/addons/$SKIN_ID"
     rm -f "$kodi/userdata/keymaps/$ADDON_ID.keyboard.xml"
     rm -f "$kodi/userdata/addon_data/$ADDON_ID/ENABLED"
     for db in "$kodi/userdata/Database"/Addons*.db; do
-        [ -f "$db" ] && sqlite3 "$db" "DELETE FROM installed WHERE addonID = '$ADDON_ID';" 2>/dev/null
+        [ -f "$db" ] && sqlite3 "$db" "DELETE FROM installed WHERE addonID IN ('$ADDON_ID', '$SETUP_ADDON_ID', '$SKIN_ID');" 2>/dev/null
     done
     echo "Entfernt fuer $(basename "$home")"
 done

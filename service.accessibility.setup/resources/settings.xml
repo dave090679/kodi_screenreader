@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="30000">
+        <setting id="manage_skin" type="bool" label="30010" default="true"/>
+        <setting id="apply_settings" type="bool" label="30011" default="true"/>
+        <setting id="setup_channels" type="bool" label="30012" default="true"/>
+        <setting id="add_favourites" type="bool" label="30013" default="true"/>
+        <setting id="channel_list_url" type="text" label="30014" default="https://raw.githubusercontent.com/dave090679/kodi_screenreader/main/service.accessibility.setup/resources/channels/oeffentlich-rechtlich.m3u"/>
+    </category>
+</settings>

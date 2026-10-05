@@ -6,6 +6,7 @@
 
 SHARE_DIR="/Library/Application Support/Kodi Screenreader"
 ADDON_ID="service.xbmc.tts"
+SETUP_ADDON_ID="service.accessibility.setup"
 USERS_ROOT="${KODI_SR_USERS_ROOT:-/Users}"
 
 log() { echo "kodi-screenreader: $*"; }
@@ -24,7 +25,7 @@ target_users() {
 # Kodi only loads addons that are enabled in its addon database. Enabling it
 # there makes the screenreader speak right on the next start, without F12.
 enable_in_addon_db() {
-    local db="$1"
+    local db="$1" ADDON_ID="$2"
     local columns
     columns=$(sqlite3 "$db" "PRAGMA table_info(installed);" 2>/dev/null | cut -d'|' -f2)
     if ! echo "$columns" | grep -qx "addonID"; then
@@ -54,6 +55,8 @@ install_for_user() {
 
     rm -rf "$kodi/addons/$ADDON_ID"
     cp -R "$SHARE_DIR/$ADDON_ID" "$kodi/addons/$ADDON_ID"
+    rm -rf "$kodi/addons/$SETUP_ADDON_ID"
+    cp -R "$SHARE_DIR/$SETUP_ADDON_ID" "$kodi/addons/$SETUP_ADDON_ID"
     cp "$SHARE_DIR/$ADDON_ID.keyboard.xml" "$kodi/userdata/keymaps/"
     cp "$SHARE_DIR/ENABLED" "$addon_data/ENABLED"
     rm -f "$addon_data/DISABLED"
@@ -65,7 +68,8 @@ install_for_user() {
     local db
     db=$(ls -1 "$kodi/userdata/Database"/Addons*.db 2>/dev/null | sort -V | tail -n 1)
     if [ -n "$db" ]; then
-        enable_in_addon_db "$db"
+        enable_in_addon_db "$db" "$ADDON_ID"
+        enable_in_addon_db "$db" "$SETUP_ADDON_ID"
         [ -z "$KODI_SR_SKIP_CHOWN" ] && chown "$user":staff "$db"
     else
         log "no addon database yet for $user (Kodi never started); enable with F12"
