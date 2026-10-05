@@ -1,3 +1,89 @@
+commit 1562ca81dd622944cadeff447c0a80a24cd61573
+Merge: e0e3772 6b9479d
+Author: dave090679 <xkill85@gmx.net>
+Date:   Wed Feb 4 23:08:14 2026 +0100
+
+    Merge branch 'main' of https://github.com/dave090679/kodi_screenreader
+
+commit e0e37720303ad2ea85b7935a2a91a4ee9e7942a5
+Author: dave090679 <xkill85@gmx.net>
+Date:   Thu Jan 29 20:16:56 2026 +0100
+
+    - debian postinst mod
+
+commit 6b9479d1f169bd1f8fff035ff2e7883ccb748abb
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Thu Jan 29 12:03:41 2026 +0100
+
+    change the DPKGBUILD to get makedeb working
+
+commit b3599be5ef1c48fb522dfd3f13803b53e99749c4
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Wed Jan 28 10:30:39 2026 +0100
+
+    0.2: install fix: installation also works when done via gnome-software
+
+commit 9a4fd531b7e54e19d7732fa0e0efda67187e4c08
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Tue Jan 27 12:16:04 2026 +0100
+
+    -
+
+commit 303342133a00184ce423052d2dff46f32d0dd295
+Author: David Parduhn <xkill85@gmx.net>
+Date:   Tue Jan 27 09:44:44 2026 +0100
+
+    - Abhängigkeiten geändert (sprachausgaben hinzugefügt)
+
+commit ef9c779dba1801cab0ffff5239d8580716fc7131
+Merge: 11f319a 38434a2
+Author: dave090679 <xkill85@gmx.net>
+Date:   Sun Jan 25 22:26:26 2026 +0100
+
+    Merge branch 'main' of https://github.com/dave090679/kodi_screenreader
+
+commit 11f319a7a88128a19de5ade180b94e306e7dea33
+Author: dave090679 <xkill85@gmx.net>
+Date:   Sat Jan 24 23:23:39 2026 +0100
+
+    added copyright
+
+commit d0941c6e1e5c13f77ff5548f8c3fba141a9ec4ac
+Author: dave090679 <xkill85@gmx.net>
+Date:   Sat Jan 24 23:09:00 2026 +0100
+
+    Update service.xbmc.tts and lib/backends submodules with latest improvements
+
+commit a3b9f1245cb4b0c7cd5030eee6a52af883a94696
+Author: dave090679 <xkill85@gmx.net>
+Date:   Sat Jan 24 23:07:20 2026 +0100
+
+    Improve debian postinst for user-specific installation
+
+commit 38434a2a81841b2544124396633fa04a01bba2ec
+Author: David Parduhn <dave@debian>
+Date:   Sat Jan 24 10:21:04 2026 +0100
+
+    - added debian build
+
+commit 46f6e7c113fe274b5455c4f611cadee02786fffc
+Author: dave090679 <xkill85@gmx.net>
+Date:   Fri Jan 23 18:21:46 2026 +0100
+
+    created arch linux package
+
+commit 757112f26d40d51fe3f3fb7d72f7cc85d20cfbe9
+Author: dave090679 <xkill85@gmx.net>
+Date:   Fri Jan 23 16:00:11 2026 +0100
+
+    added arch pkgbuild and debian build files
+
+commit b15d75fcec45ef764ffdd50e6f79827804a479e9
+Author: dave090679 <xkill85@gmx.net>
+Date:   Wed Jan 21 23:18:51 2026 +0100
+
+    added build script for LINUX_BUILD_FILES.md
+
 commit e54a5c5a97e21d1513ac6261572ddce52e364bd8
 Author: dave090679 <xkill85@gmx.net>
 Date:   Sun Nov 23 23:58:35 2025 +0100
