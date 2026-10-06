@@ -7,6 +7,18 @@ be written to.
 import ctypes, logging, os, sys, tempfile, types
 logger = logging.getLogger(__name__)
 
+
+def _ensure_list(path):
+    """
+    On Python 3.4 and later, when a package is imported from
+    an empty directory, its `__path__` will be a _NamespacePath
+    object and not a list, and _NamespacePath objects cannot
+    be indexed, leading to the error reported in #102.
+    This wrapper ensures that the path is a list for that reason.
+    """
+    return list(path)
+
+
 def _find_gen_dir():
     """Create, if needed, and return a directory where automatically
     generated modules will be created.
@@ -27,7 +39,8 @@ def _find_gen_dir():
     """
     _create_comtypes_gen_package()
     from comtypes import gen
-    if not _is_writeable(gen.__path__):
+    gen_path = _ensure_list(gen.__path__)
+    if not _is_writeable(gen_path):
         # check type of executable image to determine a subdirectory
         # where generated modules are placed.
         ftype = getattr(sys, "frozen", None)
@@ -54,19 +67,15 @@ def _find_gen_dir():
         if not os.path.exists(gen_dir):
             logger.info("Creating writeable comtypes cache directory: '%s'", gen_dir)
             os.makedirs(gen_dir)
-        gen.__path__.append(gen_dir)
-    result = os.path.abspath(gen.__path__[-1])
+        gen_path.append(gen_dir)
+    result = os.path.abspath(gen_path[-1])
     logger.info("Using writeable comtypes cache directory: '%s'", result)
     return result
 
 ################################################################
 
-if os.name == "ce":
-    SHGetSpecialFolderPath = ctypes.OleDLL("coredll").SHGetSpecialFolderPath
-    GetModuleFileName = ctypes.WinDLL("coredll").GetModuleFileNameW
-else:
-    SHGetSpecialFolderPath = ctypes.OleDLL("shell32.dll").SHGetSpecialFolderPathW
-    GetModuleFileName = ctypes.WinDLL("kernel32.dll").GetModuleFileNameW
+SHGetSpecialFolderPath = ctypes.OleDLL("shell32.dll").SHGetSpecialFolderPathW
+GetModuleFileName = ctypes.WinDLL("kernel32.dll").GetModuleFileNameW
 SHGetSpecialFolderPath.argtypes = [ctypes.c_ulong, ctypes.c_wchar_p,
                                    ctypes.c_int, ctypes.c_int]
 GetModuleFileName.restype = ctypes.c_ulong
@@ -94,7 +103,7 @@ def _create_comtypes_gen_package():
                 ofi = open(comtypes_init, "w")
                 ofi.write("# comtypes.gen package, directory for generated files.\n")
                 ofi.close()
-        except (OSError, IOError), details:
+        except (OSError, IOError) as details:
             logger.info("Creating comtypes.gen package failed: %s", details)
             module = sys.modules["comtypes.gen"] = types.ModuleType("comtypes.gen")
             comtypes.gen = module
@@ -106,12 +115,8 @@ def _is_writeable(path):
     which we can create files."""
     if not path:
         return False
-    try:
-        tempfile.TemporaryFile(dir=path[0])
-    except OSError, details:
-        logger.debug("Path is unwriteable: %s", details)
-        return False
-    return True
+    # TODO: should we add os.X_OK flag as well? It seems unnecessary on Windows.
+    return os.access(path[0], os.W_OK)
 
 def _get_module_filename(hmodule):
     """Call the Windows GetModuleFileName function which determines

@@ -133,7 +133,7 @@ class WindowsAudioPlayer(AudioPlayer):
     types = ('wav','mp3')
 
     def __init__(self,*args,**kwargs):
-        import winplay
+        from . import winplay
         self._player = winplay
         self.audio = None
         self.event = threading.Event()
@@ -147,12 +147,12 @@ class WindowsAudioPlayer(AudioPlayer):
         self.audio.play()
         self.event.clear()
         self.event.wait(self.audio.milliseconds() / 1000.0)
-        if self.event.isSet(): self.audio.stop()
+        if self.event.is_set(): self.audio.stop()
         while self.audio.isplaying(): util.sleep(10)
         self.audio = None
 
     def isPlaying(self):
-        return not self.event.isSet()
+        return not self.event.is_set()
 
     def stop(self):
         self.event.set()
@@ -164,7 +164,7 @@ class WindowsAudioPlayer(AudioPlayer):
     def available(ext=None):
         if not sys.platform.startswith('win'): return False
         try:
-            import winplay #@analysis:ignore
+            from . import winplay #@analysis:ignore
             return True
         except:
             util.ERROR('winplay import failed',hide_tb=True)

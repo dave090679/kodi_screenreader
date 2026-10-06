@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, sys, wave, array, StringIO
+import os, sys, wave, array, io
 try:
     import importlib
     importHelper = importlib.import_module
@@ -59,7 +59,7 @@ class SAPI():
         #Remove all (hopefully) refrences to comtypes import...
         del self.comtypesClient
         self.comtypesClient = None
-        for m in sys.modules.keys():
+        for m in list(sys.modules.keys()):
             if m.startswith('comtypes'): del sys.modules[m]
         import gc
         gc.collect()
@@ -84,7 +84,7 @@ class SAPI():
         self.streamFlags = self.PARSE_SAPI | self.IS_XML | self.ASYNC
         try:
             self.SpVoice.Speak('',self.flags)
-        except self.COMError,e:
+        except self.COMError as e:
             if util.DEBUG:
                 self.logSAPIError(e)
                 util.LOG('SAPI: XP Detected - changing flags')
@@ -126,7 +126,7 @@ class SAPI():
         voice_name = voice_name or self._voiceName
         if voice_name:
             v = self.SpVoice.getVoices() or []
-            for i in xrange(len(v)):
+            for i in range(len(v)):
                 voice=v[i]
                 if voice_name==voice.GetDescription():
                     return voice
@@ -139,7 +139,7 @@ class SAPI():
                 return None
             try:
                 return func(self,*args,**kwargs)
-            except self.COMError,e:
+            except self.COMError as e:
                 self.logSAPIError(e,func.__name__)
             except:
                 util.ERROR('SAPI: {0} error'.format(func.__name__))
@@ -151,7 +151,7 @@ class SAPI():
                 self.valid = True
                 util.LOG('SAPI: Resetting succeded.')
                 return func(self,*args,**kwargs)
-            except self.COMError,e:
+            except self.COMError as e:
                 self.valid = False
                 self.logSAPIError(e,func.__name__)
             except:
@@ -219,7 +219,7 @@ class SAPITTSBackend(SimpleTTSBackendBase):
     volumeExternalEndpoints = (0,100)
     volumeStep = 5
     volumeSuffix = '%'
-    baseSSML = u'''<?xml version="1.0"?>
+    baseSSML = '''<?xml version="1.0"?>
 <speak version="1.0"
          xmlns="http://www.w3.org/2001/10/synthesis"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -254,7 +254,7 @@ class SAPITTSBackend(SimpleTTSBackendBase):
         if not stream: return False
         try:
             stream.Open(outFile, 3) #3=SSFMCreateForWrite
-        except self.sapi.COMError,e:
+        except self.sapi.COMError as e:
             self.sapi.logSAPIError(e)
             return False
         ssml = self.ssml.format(text=saxutils.escape(text))
@@ -279,9 +279,9 @@ class SAPITTSBackend(SimpleTTSBackendBase):
         self.sapi.set_SpVoice_AudioOutputStream(stream)
 
         ssml = self.ssml.format(text=saxutils.escape(text))
-        self.sapi.SpVoice_Speak(ssml,self.streamFlags)
+        self.sapi.SpVoice_Speak(ssml,self.sapi.streamFlags)
 
-        wavIO = StringIO.StringIO()
+        wavIO = io.BytesIO()
         self.createWavFileObject(wavIO,stream)
         return wavIO
 
@@ -289,7 +289,7 @@ class SAPITTSBackend(SimpleTTSBackendBase):
         #Write wave via the wave module
         wavFileObj = wave.open(wavIO,'wb')
         wavFileObj.setparams((1, 2, 22050, 0, 'NONE', 'not compressed'))
-        wavFileObj.writeframes(array.array('B',stream.GetData()).tostring())
+        wavFileObj.writeframes(array.array('B',stream.GetData()).tobytes())
         wavFileObj.close()
 
     def stop(self):
@@ -317,11 +317,12 @@ class SAPITTSBackend(SimpleTTSBackendBase):
             voices=[]
             v=sapi.SpVoice_GetVoices()
             if not v: return voices
-            for i in xrange(len(v)):
+            for i in range(len(v)):
                 try:
                     name=v[i].GetDescription()
-                except COMError,e: #analysis:ignore
+                except sapi.COMError as e:
                     sapi.logSAPIError(e)
+                    continue
                 voices.append((name,name))
             return voices
 
@@ -343,7 +344,7 @@ class SAPITTSBackend(SimpleTTSBackendBase):
 #    def createWavFileObject(self,wavIO,stream):
 #        #Write wave headers manually
 #        import struct
-#        data = array.array('B',stream.GetData()).tostring()
+#        data = array.array('B',stream.GetData()).tobytes()
 #        dlen = len(data)
 #        header = struct.pack(        '4sl8slhhllhh4sl',
 #                                            'RIFF',

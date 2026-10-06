@@ -23,6 +23,13 @@ EXTERNAL TODO:
  OSX installer?
  Android TTS app for android backend
 
+** 1.0.9 **
+
+Windows: speech works again with Kodi 19 and later (Python 3)
+Windows: SAPI, JAWS and Windows audio playback ported to Python 3 (from pvagner/backends 2to3, comtypes 1.1.9)
+Windows: NVDA loads the 64-bit controller client on 64-bit Kodi
+Termux backend loads again
+
 ** 1.0.8 **
 
 Now defaults to outputting direct through SAPI - was crashing on Windows when playing speech via XBMC
