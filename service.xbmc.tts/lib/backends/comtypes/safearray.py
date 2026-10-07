@@ -35,7 +35,7 @@ class _SafeArrayAsNdArrayContextManager(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.thread_local.count -= 1
 
-    def __nonzero__(self):
+    def __bool__(self):
         '''True if context manager is currently entered on given thread.
 
         '''
@@ -160,7 +160,7 @@ def _make_safearray_type(itemtype):
                 ai = value.__array_interface__
                 if ai["version"] != 3:
                     raise TypeError("only __array_interface__ version 3 supported")
-                if cls._itemtype_ != numpy.ctypeslib._typecodes[ai["typestr"]]:
+                if cls._itemtype_ != npsupport.typecodes[ai["typestr"]]:
                     raise TypeError("Wrong array item type")
 
             # SAFEARRAYs have Fortran order; convert the numpy array if needed
@@ -222,9 +222,9 @@ def _make_safearray_type(itemtype):
             self._needsfree = True
             return self[0]
 
-        def __del__(self):
+        def __del__(self, _SafeArrayDestroy=_safearray.SafeArrayDestroy):
             if self._needsfree:
-                _safearray.SafeArrayDestroy(self)
+                _SafeArrayDestroy(self)
 
         def _get_size(self, dim):
             "Return the number of elements for dimension 'dim'"
@@ -308,7 +308,7 @@ def _make_safearray_type(itemtype):
                         # XXX Only try to convert types known to
                         #     numpy.ctypeslib.
                         if (safearray_as_ndarray and self._itemtype_ in
-                                numpy.ctypeslib._typecodes.values()):
+                                list(npsupport.typecodes.values())):
                             arr = numpy.ctypeslib.as_array(ptr,
                                                            (num_elements,))
                             return arr.copy()

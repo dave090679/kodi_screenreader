@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os, subprocess
-import base
+from . import base
 
 class Pico2WaveTTSBackend(base.SimpleTTSBackendBase):
     provider = 'pico2wave'
@@ -33,9 +33,9 @@ class Pico2WaveTTSBackend(base.SimpleTTSBackendBase):
     def settingList(cls,setting,*args):
         if setting == 'language':
             try:
-                out = subprocess.check_output(['pico2wave','-l','NONE','-w','/dev/null','X'],stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError, e:
-                out = e.output
+                out = subprocess.check_output(['pico2wave','-l','NONE','-w','/dev/null','X'],stderr=subprocess.STDOUT).decode('utf-8')
+            except subprocess.CalledProcessError as e:
+                out = e.output.decode('utf-8')
             if not 'languages:' in out: return None
 
         return [ (v,v) for v in out.split('languages:',1)[-1].split('\n\n')[0].strip('\n').split('\n')]

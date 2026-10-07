@@ -41,12 +41,14 @@ install_user_addon() {
 
     KODI_DIR="$USER_HOME/.kodi"
 
-    rm -rf "$KODI_DIR/addons/service.xbmc.tts"
+    rm -rf "$KODI_DIR/addons/service.xbmc.tts" "$KODI_DIR/addons/service.accessibility.setup"
     install -dm755 "$KODI_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_DIR/addons/service.accessibility.setup"
     install -dm755 "$KODI_DIR/userdata/keymaps"
     install -dm755 "$KODI_DIR/userdata/addon_data/service.xbmc.tts"
 
     cp -a /usr/share/kodi/addons/service.xbmc.tts/. "$KODI_DIR/addons/service.xbmc.tts/"
+    cp -a /usr/share/kodi/addons/service.accessibility.setup/. "$KODI_DIR/addons/service.accessibility.setup/"
     install -m 644 /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml \
         "$KODI_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml"
     install -m 644 /etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED \
@@ -54,6 +56,7 @@ install_user_addon() {
 
     chown -R "$USER_NAME:$USER_NAME" \
         "$KODI_DIR/addons/service.xbmc.tts" \
+        "$KODI_DIR/addons/service.accessibility.setup" \
         "$KODI_DIR/userdata/keymaps" \
         "$KODI_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
 }
@@ -79,12 +82,14 @@ install_user_addon() {
 
     KODI_DIR="$USER_HOME/.kodi"
 
-    rm -rf "$KODI_DIR/addons/service.xbmc.tts"
+    rm -rf "$KODI_DIR/addons/service.xbmc.tts" "$KODI_DIR/addons/service.accessibility.setup"
     install -dm755 "$KODI_DIR/addons/service.xbmc.tts"
+    install -dm755 "$KODI_DIR/addons/service.accessibility.setup"
     install -dm755 "$KODI_DIR/userdata/keymaps"
     install -dm755 "$KODI_DIR/userdata/addon_data/service.xbmc.tts"
 
     cp -a /usr/share/kodi/addons/service.xbmc.tts/. "$KODI_DIR/addons/service.xbmc.tts/"
+    cp -a /usr/share/kodi/addons/service.accessibility.setup/. "$KODI_DIR/addons/service.accessibility.setup/"
     install -m 644 /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml \
         "$KODI_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml"
     install -m 644 /etc/kodi/userdata/addon_data/service.xbmc.tts/ENABLED \
@@ -92,6 +97,7 @@ install_user_addon() {
 
     chown -R "$USER_NAME:$USER_NAME" \
         "$KODI_DIR/addons/service.xbmc.tts" \
+        "$KODI_DIR/addons/service.accessibility.setup" \
         "$KODI_DIR/userdata/keymaps" \
         "$KODI_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
 }
@@ -119,7 +125,7 @@ if [ $1 -eq 0 ]; then
 
         KODI_DIR="$USER_HOME/.kodi"
 
-        rm -rf "$KODI_DIR/addons/service.xbmc.tts" 2>/dev/null || true
+        rm -rf "$KODI_DIR/addons/service.xbmc.tts" "$KODI_DIR/addons/service.accessibility.setup" 2>/dev/null || true
         rm -f "$KODI_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml" 2>/dev/null || true
         rm -rf "$KODI_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
     done
@@ -142,7 +148,7 @@ for USER in $(get_logged_in_users); do
 
     KODI_DIR="$USER_HOME/.kodi"
 
-    rm -rf "$KODI_DIR/addons/service.xbmc.tts" 2>/dev/null || true
+    rm -rf "$KODI_DIR/addons/service.xbmc.tts" "$KODI_DIR/addons/service.accessibility.setup" 2>/dev/null || true
     rm -f "$KODI_DIR/userdata/keymaps/service.xbmc.tts.keyboard.xml" 2>/dev/null || true
     rm -rf "$KODI_DIR/userdata/addon_data/service.xbmc.tts" 2>/dev/null || true
 done
@@ -152,6 +158,7 @@ exit 0
 %files
 %license LICENSE
 %{_datadir}/kodi/addons/service.xbmc.tts
+%{_datadir}/kodi/addons/service.accessibility.setup
 %{_sysconfdir}/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml
 %{_sysconfdir}/kodi/userdata/addon_data/service.xbmc.tts/ENABLED
 

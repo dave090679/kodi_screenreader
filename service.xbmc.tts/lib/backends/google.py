@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import urllib, urllib2, shutil, os, subprocess
-import base, audio
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, shutil, os, subprocess
+from . import base, audio
 from lib import util
 import textwrap
 
@@ -71,10 +71,10 @@ class GoogleTTSBackend(base.SimpleTTSBackendBase):
                 self.player.play()
 
     def runCommand(self,text,outFile):
-        url = self.ttsURL.format(self.language,urllib.quote(text.encode('utf-8')))
-        req = urllib2.Request(url, headers={ 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36' })
+        url = self.ttsURL.format(self.language,urllib.parse.quote(text.encode('utf-8')))
+        req = urllib.request.Request(url, headers={ 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36' })
         try:
-            resp = urllib2.urlopen(req)
+            resp = urllib.request.urlopen(req)
         except:
             util.ERROR('Failed to open Google TTS URL',hide_tb=True)
             return False
@@ -84,10 +84,10 @@ class GoogleTTSBackend(base.SimpleTTSBackendBase):
         return True
 
     def runCommandAndPipe(self,text):
-        url = self.ttsURL.format(self.language,urllib.quote(text.encode('utf-8')))
-        req = urllib2.Request(url, headers={ 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36' })
+        url = self.ttsURL.format(self.language,urllib.parse.quote(text.encode('utf-8')))
+        req = urllib.request.Request(url, headers={ 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36' })
         try:
-            resp = urllib2.urlopen(req)
+            resp = urllib.request.urlopen(req)
         except:
             util.ERROR('Failed to open Google TTS URL',hide_tb=True)
             return None

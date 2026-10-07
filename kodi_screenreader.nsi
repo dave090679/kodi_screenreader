@@ -6,8 +6,8 @@
 !include x64.nsh
 !define APP_NAME "kodi screenreader"
 !define WEB_SITE "https://kodi.tv/"
-!define VERSION "01.10.00.00"
-!define INSTALLER_NAME "kodi_screenreader_1.1.exe"
+!define VERSION "01.20.00.00"
+!define INSTALLER_NAME "kodi_screenreader_1.2.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 ######################################################################
 AutoCloseWindow true
@@ -47,6 +47,8 @@ sectiongroup "Basiskomponenten"
     file "ENABLED"
     setoutpath "$APPDATA\Kodi\userdata\keymaps"
     file "service.xbmc.tts.keyboard.xml"
+    setoutpath "$APPDATA\Kodi\addons\service.accessibility.setup"
+    file /r "service.accessibility.setup\*.*"
   sectionend
 sectiongroupend
 Function .onInit
@@ -57,11 +59,11 @@ Function .onInit
   ${EndIf}
   FindWindow $0 "" "Kodi"
   ${If} $0 != 0
-    messagebox MB_OK "Kodi läuft noch. Beenden Sie es, bevor Sie den Screenreader installieren. Holen Sie das Fenster mit alttab in den Vordergrund und drücken Sie dann alt+F4, um Kodi zu schliießen."
+    messagebox MB_OK "Kodi l uft noch. Beenden Sie es, bevor Sie den Screenreader installieren. Holen Sie das Fenster mit alttab in den Vordergrund und dr cken Sie dann alt+F4, um Kodi zu schliie en."
     quit
   ${EndIf}
 FunctionEnd
 
 Function .onInstSuccess
-  MessageBox MB_OK "Der Screenreader wurde erfolgreich installiert. Drücken Sie nach dem Start von Kodi F12, um ihn zu aktivieren."
+  MessageBox MB_OK "Der Screenreader wurde erfolgreich installiert. Dr cken Sie nach dem Start von Kodi F12, um ihn zu aktivieren."
 FunctionEnd

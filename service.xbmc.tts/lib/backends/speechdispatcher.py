@@ -3,7 +3,7 @@ import locale
 import re
 import subprocess
 
-from base import ThreadedTTSBackend
+from .base import ThreadedTTSBackend
 from lib import util
 
 

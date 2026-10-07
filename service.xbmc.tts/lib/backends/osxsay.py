@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 from lib import util
-from base import ThreadedTTSBackend
+from .base import ThreadedTTSBackend
 
 # Matches lines of `say -v '?'`, e.g.
 #   "Anna                de_DE    # Hallo! Ich heiße Anna."              (older macOS)

@@ -5,16 +5,14 @@ from lib import util
 
 try:
     import xbmc
+    import xbmcvfs
 except:
     xbmc = None
 
 PLAYSFX_HAS_USECACHED = False
 
 try:
-    addon_path = xbmc.translatePath(util.xbmcaddon.Addon().getAddonInfo('path'))
-    if isinstance(addon_path, bytes):
-        addon_path = addon_path.decode('utf-8')
-    voidWav = os.path.join(addon_path,'resources','wavs','void.wav')
+    voidWav = os.path.join(xbmcvfs.translatePath(util.xbmcaddon.Addon().getAddonInfo('path')).decode('utf-8'),'resources','wavs','void.wav')
     xbmc.playSFX(voidWav,False)
     PLAYSFX_HAS_USECACHED = True
 except:
@@ -22,7 +20,7 @@ except:
 
 def check_snd_bm2835():
     try:
-        return 'snd_bcm2835' in subprocess.check_output(['lsmod'], text=True, errors='ignore')
+        return 'snd_bcm2835' in subprocess.check_output(['lsmod']).decode('utf-8')
     except:
         util.ERROR('check_snd_bm2835(): lsmod filed',hide_tb=True)
     return False
@@ -133,7 +131,7 @@ class WindowsAudioPlayer(AudioPlayer):
     types = ('wav','mp3')
 
     def __init__(self,*args,**kwargs):
-        import winplay
+        from . import winplay
         self._player = winplay
         self.audio = None
         self.event = threading.Event()
@@ -164,7 +162,7 @@ class WindowsAudioPlayer(AudioPlayer):
     def available(ext=None):
         if not sys.platform.startswith('win'): return False
         try:
-            import winplay #@analysis:ignore
+            from . import winplay #@analysis:ignore
             return True
         except:
             util.ERROR('winplay import failed',hide_tb=True)
@@ -553,4 +551,6 @@ class MP3AudioPlayerHandler(WavAudioPlayerHandler):
         for p in cls.players:
             if p.available('mp3'): return True
         return False
+
+
 

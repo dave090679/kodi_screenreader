@@ -5,6 +5,10 @@ post_install() {
     mkdir -p "$USER_HOME/.kodi/addons/service.xbmc.tts"
     cp -r /usr/share/kodi/addons/service.xbmc.tts/* "$USER_HOME/.kodi/addons/service.xbmc.tts/"
     
+    # Accessibility setup addon
+    mkdir -p "$USER_HOME/.kodi/addons/service.accessibility.setup"
+    cp -r /usr/share/kodi/addons/service.accessibility.setup/* "$USER_HOME/.kodi/addons/service.accessibility.setup/"
+
     # Keyboard mappings
     mkdir -p "$USER_HOME/.kodi/userdata/keymaps"
     cp /etc/kodi/userdata/keymaps/service.xbmc.tts.keyboard.xml "$USER_HOME/.kodi/userdata/keymaps/"

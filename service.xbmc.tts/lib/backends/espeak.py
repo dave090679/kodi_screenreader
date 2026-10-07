@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import base
+from . import base
 import subprocess
 import ctypes
 import ctypes.util
@@ -146,7 +146,7 @@ class ESpeakCtypesTTSBackend(base.TTSBackendBase):
         if not self.eSpeak: return
         if self.voice: self.eSpeak.espeak_SetVoiceByName(self.voice)
         if interrupt: self.eSpeak.espeak_Cancel()
-        if isinstance(text,unicode): text = text.encode('utf-8')
+        if isinstance(text,str): text = text.encode('utf-8')
         sb_text = ctypes.create_string_buffer(text)
         size = ctypes.sizeof(sb_text)
         self.eSpeak.espeak_Synth(sb_text,size,0,0,0,0x1000,None,None)

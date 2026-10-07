@@ -4,6 +4,7 @@
 # flags '..\tools\windows.xml -m comtypes -m comtypes.automation -w -r .*TypeLibEx -r .*TypeLib -o typeinfo.py'
 # then hacked manually
 import os
+import sys
 import weakref
 
 from ctypes import *
@@ -31,6 +32,8 @@ from comtypes.automation import WCHAR
 from comtypes.automation import WORD
 from comtypes.automation import tagVARIANT
 
+is_64_bit = sys.maxsize > 2**32
+
 BOOL = c_int
 HREFTYPE = DWORD
 INT = c_int
@@ -38,7 +41,9 @@ MEMBERID = DISPID
 OLECHAR = WCHAR
 PVOID = c_void_p
 SHORT = c_short
-ULONG_PTR = c_ulong
+# See https://msdn.microsoft.com/en-us/library/windows/desktop/aa383751(v=vs.85).aspx#ULONG_PTR  # noqa
+ULONG_PTR = c_uint64 if is_64_bit else c_ulong
+
 USHORT = c_ushort
 LPOLESTR = POINTER(OLECHAR)
 
@@ -506,26 +511,11 @@ def CreateTypeLib(filename, syskind=SYS_WIN32):
     _oleaut32.CreateTypeLib2(syskind, c_wchar_p(filename), byref(ctlib))
     return ctlib
 
-if os.name == "ce":
-    # See also:
-    # http://blogs.msdn.com/larryosterman/archive/2006/01/09/510856.aspx
-    #
-    # windows CE does not have QueryPathOfRegTypeLib. Emulate by reading the registry:
-    def QueryPathOfRegTypeLib(libid, wVerMajor, wVerMinor, lcid=0):
-        "Return the path of a registered type library"
-        import _winreg
-        try:
-            hkey = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, r"Typelib\%s\%s.%s\%x\win32" % (libid, wVerMajor, wVerMinor, lcid))
-        except WindowsError:
-            # On CE, some typelib names are not in the ..\win32 subkey:
-            hkey = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, r"Typelib\%s\%s.%s\%x" % (libid, wVerMajor, wVerMinor, lcid))
-        return _winreg.QueryValueEx(hkey, "")[0]
-else:
-    def QueryPathOfRegTypeLib(libid, wVerMajor, wVerMinor, lcid=0):
-        "Return the path of a registered type library"
-        pathname = BSTR()
-        _oleaut32.QueryPathOfRegTypeLib(byref(GUID(libid)), wVerMajor, wVerMinor, lcid, byref(pathname))
-        return pathname.value.split("\0")[0]
+def QueryPathOfRegTypeLib(libid, wVerMajor, wVerMinor, lcid=0):
+    "Return the path of a registered type library"
+    pathname = BSTR()
+    _oleaut32.QueryPathOfRegTypeLib(byref(GUID(libid)), wVerMajor, wVerMinor, lcid, byref(pathname))
+    return pathname.value.split("\0")[0]
 
 ################################################################
 # Structures

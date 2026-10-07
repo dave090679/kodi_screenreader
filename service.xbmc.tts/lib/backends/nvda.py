@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import os, ctypes
 from lib import util
-from base import TTSBackendBase
+from .base import TTSBackendBase
+
+DLL_NAME = 'nvdaControllerClient64.dll' if ctypes.sizeof(ctypes.c_void_p) == 8 else 'nvdaControllerClient32.dll'
 
 def getDLLPath():
-    p = os.path.join(util.profileDirectory(),'nvdaControllerClient32.dll')
+    p = os.path.join(util.profileDirectory(),DLL_NAME)
     if os.path.exists(p): return p
-    p = os.path.join(util.backendsDirectory(),'nvda','nvdaControllerClient32.dll')
+    p = os.path.join(util.backendsDirectory(),'nvda',DLL_NAME)
     if os.path.exists(p): return p
     try:
         import xbmc
@@ -14,7 +16,7 @@ def getDLLPath():
             if util.DEBUG: util.LOG('Found script.module.nvdacontrollerclient module for NVDA')
             import xbmcaddon
             nvdaCCAddon = xbmcaddon.Addon('script.module.nvdacontrollerclient')
-            p = os.path.join(nvdaCCAddon.getAddonInfo('path').decode('utf-8'),'nvda','nvdaControllerClient32.dll')
+            p = os.path.join(nvdaCCAddon.getAddonInfo('path'),'nvda',DLL_NAME)
             if os.path.exists(p): return p
     except (ImportError,AttributeError):
         return None
@@ -22,6 +24,8 @@ def getDLLPath():
 
 try:
     from ctypes import windll
+    from ctypes import wintypes
+    windll.kernel32.FreeLibrary.argtypes = [wintypes.HMODULE]
 except ImportError:
     windll =None
 

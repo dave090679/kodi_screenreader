@@ -1,18 +1,17 @@
 # Copyright (C) 2003-2008 Brailcom, o.p.s.
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """Python API to Speech Dispatcher
 
@@ -32,7 +31,7 @@ try:
 except:
     import dummy_threading as threading
 
-import paths
+from . import paths
     
 class CallbackType(object):
     """Constants describing the available types of callbacks"""
@@ -151,9 +150,9 @@ class CommunicationMethod(object):
 class _SSIP_Connection(object):
     """Implemantation of low level SSIP communication."""
     
-    _NEWLINE = "\r\n"
-    _END_OF_DATA_MARKER = '.'
-    _END_OF_DATA_MARKER_ESCAPED = '..'
+    _NEWLINE = b"\r\n"
+    _END_OF_DATA_MARKER = b'.'
+    _END_OF_DATA_MARKER_ESCAPED = b'..'
     _END_OF_DATA = _NEWLINE + _END_OF_DATA_MARKER + _NEWLINE
     _END_OF_DATA_ESCAPED = _NEWLINE + _END_OF_DATA_MARKER_ESCAPED + _NEWLINE
     # Constants representing \r\n. and \r\n..
@@ -187,18 +186,19 @@ class _SSIP_Connection(object):
         try:
             self._socket = socket.socket(socket_family, socket.SOCK_STREAM)
             self._socket.connect(socket_connect_args)
-        except socket.error, ex:
+        except socket.error as ex:
             raise SSIPCommunicationError("Can't open socket using method "
                                          + communication_method,
                                          original_exception = ex)
 
-        self._buffer = ""
+        self._buffer = b""
         self._com_buffer = []
         self._callback = None
         self._ssip_reply_semaphore = threading.Semaphore(0)
         self._communication_thread = \
                 threading.Thread(target=self._communication, kwargs={},
                                  name="SSIP client communication thread")
+                                 #daemon=True)
         self._communication_thread.start()
     
     def close(self):
@@ -232,7 +232,7 @@ class _SSIP_Connection(object):
             except IOError:
                 # If the socket has been closed, exit the thread
                 sys.exit()
-            if code/100 != 7:
+            if code//100 != 7:
                 # This is not an index mark nor an event
                 self._com_buffer.append((code, msg, data))
                 self._ssip_reply_semaphore.release()
@@ -267,7 +267,7 @@ class _SSIP_Connection(object):
             pointer = self._buffer.find(self._NEWLINE)
         line = self._buffer[:pointer]
         self._buffer = self._buffer[pointer+len(self._NEWLINE):]
-        return line
+        return line.decode('utf-8')
 
     def _recv_message(self):
         """Read server response or a callback
@@ -290,7 +290,7 @@ class _SSIP_Connection(object):
         and return the triplet (code, msg, data)."""
         # TODO: This check is dumb but seems to work.  The main thread
         # hangs without it, when the Speech Dispatcher connection is lost.
-        if not self._communication_thread.isAlive():
+        if not self._communication_thread.is_alive():
             raise SSIPCommunicationError
         self._ssip_reply_semaphore.acquire()
         # The list is sorted, read the first item
@@ -321,11 +321,11 @@ class _SSIP_Connection(object):
                        or isinstance(args[0], int)
         cmd = ' '.join((command,) + tuple(map(str, args)))
         try:
-            self._socket.send(cmd + self._NEWLINE)
+            self._socket.send(cmd.encode('utf-8') + self._NEWLINE)
         except socket.error:
             raise SSIPCommunicationError("Speech Dispatcher connection lost.")
         code, msg, data = self._recv_response()
-        if code/100 != 2:
+        if code//100 != 2:
             raise SSIPCommandError(code, msg, cmd)
         return code, msg, data
         
@@ -340,6 +340,7 @@ class _SSIP_Connection(object):
         'IOError' is raised when the socket was closed by the remote side.
         
         """
+        data = data.encode('utf-8')
         # Escape the end-of-data marker even if present at the beginning
         # The start of the string is also the start of a line.
         if data.startswith(self._END_OF_DATA_MARKER):
@@ -357,7 +358,7 @@ class _SSIP_Connection(object):
         except socket.error:
             raise SSIPCommunicationError("Speech Dispatcher connection lost.")
         code, msg, response_data = self._recv_response()
-        if code/100 != 2:
+        if code//100 != 2:
             raise SSIPDataError(code, msg, data)
         return code, msg, response_data
 
@@ -455,7 +456,9 @@ class PunctuationMode(object):
     NONE = 'none'
     """Don't read any punctuation character at all."""
     SOME = 'some'
-    """Only the user-defined punctuation characters are read.
+    """Only some of the user-defined punctuation characters are read."""
+    MOST = 'most'
+    """Only most of the user-defined punctuation characters are read.
 
     The set of characters is specified in Speech Dispatcher configuration.
 
@@ -579,14 +582,14 @@ class SSIPClient(object):
         """Establish new connection (and/or autospawn server)"""
         try:
             self._conn = _SSIP_Connection(**connection_args)
-        except SSIPCommunicationError, ce:
+        except SSIPCommunicationError as ce:
             # Suppose server might not be running, try the autospawn mechanism
             if autospawn != False:
                 # Autospawn is however not guaranteed to start the server. The server
                 # will decide, based on it's configuration, whether to honor the request.
                 try:
                     self._server_spawn(connection_args)
-                except SpawnError, se:
+                except SpawnError as se:
                     ce.set_additional_exception(se)
                     raise ce
                 self._conn = _SSIP_Connection(**connection_args)
@@ -740,8 +743,6 @@ class SSIPClient(object):
 
         """
         self._conn.send_command('SPEAK')
-        if isinstance(text, unicode):
-            text = text.encode('utf-8')
         result = self._conn.send_data(text)
         if callback:
             msg_id = int(result[2][0])
@@ -762,8 +763,6 @@ class SSIPClient(object):
         message is queued on the server and the method returns immediately.
 
         """
-        if isinstance(char, unicode):
-            char = char.encode('utf-8')
         self._conn.send_command('CHAR', char.replace(' ', 'space'))
         
     def key(self, key):
@@ -843,10 +842,10 @@ class SSIPClient(object):
     def list_synthesis_voices(self):
         """Return names of all available voices for the current output module.
 
-        Returns a tuple of tripplets (name, language, dialect).
+        Returns a tuple of tripplets (name, language, variant).
 
-        'name' is a string, 'language' is an ISO 639-1 Alpha-2 language code
-        and 'dialect' is a string.  Language and dialect may be None.
+        'name' is a string, 'language' is an ISO 639-1 Alpha-2/3 language code
+        and 'variant' is a string.  Language and variant may be None.
 
         """
         try:
@@ -854,20 +853,27 @@ class SSIPClient(object):
         except SSIPCommandError:
             return ()
         def split(item):
-            name, lang, dialect = tuple(item.rsplit(' ', 3))
-            return (name, lang or None, dialect or None)
+            name, lang, variant = tuple(item.rsplit('\t', 3))
+            return (name, lang or None, variant or None)
         return tuple([split(item) for item in data])
 
     def set_language(self, language, scope=Scope.SELF):
         """Switch to a particular language for further speech commands.
 
         Arguments:
-          language -- two letter language code according to RFC 1776 as string.
+          language -- two/three letter language code according to RFC 1766 as string, possibly with a region qualification.
           scope -- see the documentation of this class.
             
         """
-        assert isinstance(language, str) and len(language) == 2
+        assert isinstance(language, str)
         self._conn.send_command('SET', scope, 'LANGUAGE', language)
+
+    def get_language(self):
+        """Get the current language."""
+        code, msg, data = self._conn.send_command('GET', 'LANGUAGE')
+        if data:
+            return data[0]
+        return None
 
     def set_output_module(self, name, scope=Scope.SELF):
         """Switch to a particular output module.
@@ -878,6 +884,13 @@ class SSIPClient(object):
         
         """
         self._conn.send_command('SET', scope, 'OUTPUT_MODULE', name)
+
+    def get_output_module(self):
+        """Get the current output module."""
+        code, msg, data = self._conn.send_command('GET', 'OUTPUT_MODULE')
+        if data:
+            return data[0]
+        return None
 
     def set_pitch(self, value, scope=Scope.SELF):
         """Set the pitch for further speech commands.
@@ -893,6 +906,27 @@ class SSIPClient(object):
         assert isinstance(value, int) and -100 <= value <= 100, value
         self._conn.send_command('SET', scope, 'PITCH', value)
 
+    def get_pitch(self):
+        """Get the current pitch."""
+        code, msg, data = self._conn.send_command('GET', 'PITCH')
+        if data:
+            return data[0]
+        return None
+
+    def set_pitch_range(self, value, scope=Scope.SELF):
+        """Set the pitch range for further speech commands.
+
+        Arguments:
+          value -- integer value within the range from -100 to 100, with 0
+            corresponding to the default pitch range of the current speech synthesis
+            output module, lower values meaning lower pitch range and higher values
+            meaning higher pitch range.
+          scope -- see the documentation of this class.
+          
+        """
+        assert isinstance(value, int) and -100 <= value <= 100, value
+        self._conn.send_command('SET', scope, 'PITCH_RANGE', value)
+
     def set_rate(self, value, scope=Scope.SELF):
         """Set the speech rate (speed) for further speech commands.
 
@@ -907,6 +941,13 @@ class SSIPClient(object):
         assert isinstance(value, int) and -100 <= value <= 100
         self._conn.send_command('SET', scope, 'RATE', value)
 
+    def get_rate(self):
+        """Get the current speech rate (speed)."""
+        code, msg, data = self._conn.send_command('GET', 'RATE')
+        if data:
+            return data[0]
+        return None
+
     def set_volume(self, value, scope=Scope.SELF):
         """Set the speech volume for further speech commands.
 
@@ -920,6 +961,13 @@ class SSIPClient(object):
         assert isinstance(value, int) and -100 <= value <= 100
         self._conn.send_command('SET', scope, 'VOLUME', value)
 
+    def get_volume(self):
+        """Get the speech volume."""
+        code, msg, data = self._conn.send_command('GET', 'VOLUME')
+        if data:
+            return data[0]
+        return None
+
     def set_punctuation(self, value, scope=Scope.SELF):
         """Set the punctuation pronounciation level.
 
@@ -928,9 +976,16 @@ class SSIPClient(object):
           scope -- see the documentation of this class.
             
         """
-        assert value in (PunctuationMode.ALL, PunctuationMode.SOME,
-                         PunctuationMode.NONE), value
+        assert value in (PunctuationMode.ALL, PunctuationMode.MOST,
+                         PunctuationMode.SOME, PunctuationMode.NONE), value
         self._conn.send_command('SET', scope, 'PUNCTUATION', value)
+
+    def get_punctuation(self):
+        """Get the punctuation pronounciation level."""
+        code, msg, data = self._conn.send_command('GET', 'PUNCTUATION')
+        if data:
+            return data[0]
+        return None
 
     def set_spelling(self, value, scope=Scope.SELF):
         """Toogle the spelling mode or on off.
@@ -979,7 +1034,7 @@ class SSIPClient(object):
                value.lower() in ("male1", "male2", "male3", "female1",
                                  "female2", "female3", "child_male",
                                  "child_female")
-        self._conn.send_command('SET', scope, 'VOICE', value)
+        self._conn.send_command('SET', scope, 'VOICE_TYPE', value)
 
     def set_synthesis_voice(self, value, scope=Scope.SELF):
         """Set voice by its real name.

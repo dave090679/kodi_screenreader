@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os, subprocess
-import base
+from . import base
 from lib import util
 
 def getStartupInfo():

@@ -9,8 +9,9 @@ from lib import util
 
 
 def _load_backend(module_name, *class_names):
+    """Import a backend module; a broken or unsupported one must not disable the others."""
     try:
-        module = importlib.import_module(module_name)
+        module = importlib.import_module('.' + module_name, __name__)
     except Exception as exc:
         util.LOG('Skipping backend module {0}: {1}: {2}'.format(module_name, exc.__class__.__name__, exc))
         for class_name in class_names:
@@ -20,8 +21,6 @@ def _load_backend(module_name, *class_names):
     for class_name in class_names:
         globals()[class_name] = getattr(module, class_name, None)
 
-
-audio = importlib.import_module('audio')
 
 _load_backend('base', 'LogOnlyTTSBackend')
 _load_backend('nvda', 'NVDATTSBackend')
@@ -44,15 +43,16 @@ def _defined(*backend_classes):
     return [backend_class for backend_class in backend_classes if backend_class]
 
 
+# Screen readers first (they are only "available" while running), then plain speech engines.
 backendsByPriority = _defined(
+    NVDATTSBackend,
+    JAWSTTSBackend,
+    VoiceOverBackend,
     SAPITTSBackend,
     OSXSayTTSBackend,
-    VoiceOverBackend,
     TermuxTTSBackend,
     SpeechDispatcherTTSBackend,
     ESpeakTTSBackend,
-    JAWSTTSBackend,
-    NVDATTSBackend,
     FliteTTSBackend,
     Pico2WaveTTSBackend,
     FestivalTTSBackend,
@@ -62,7 +62,6 @@ backendsByPriority = _defined(
     ESpeakCtypesTTSBackend,
     LogOnlyTTSBackend,
 )
-
 def removeBackendsByProvider(to_remove):
     rem = []
     for b in backendsByPriority:
@@ -78,13 +77,20 @@ def getAvailableBackends(can_stream_wav=False):
         available.append(b)
     return available
 
-def getBackendFallback():
+def getBackendFallback(old_backend=None):
+    backend = _getBackendFallback()
+
+    if old_backend is None:
+        return backend
+
+    if old_backend.__class__ == backend:
+        return LogOnlyTTSBackend
+
+    return backend
+
+def _getBackendFallback():
     if util.isATV2() and FliteTTSBackend:
         return FliteTTSBackend
-    elif util.isWindows() and SAPITTSBackend:
-        return SAPITTSBackend
-    elif util.isOSX() and OSXSayTTSBackend:
-        return OSXSayTTSBackend
     elif util.isOpenElec() and ESpeakTTSBackend:
         return ESpeakTTSBackend
     for b in backendsByPriority:

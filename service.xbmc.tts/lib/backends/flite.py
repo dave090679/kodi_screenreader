@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, subprocess
 from lib import util
-import base
+from . import base
 
 class FliteTTSBackend(base.SimpleTTSBackendBase):
     provider = 'Flite'

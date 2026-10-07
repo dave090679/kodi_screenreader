@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from base import ThreadedTTSBackend
+from .base import ThreadedTTSBackend
 
 class JAWSTTSBackend(ThreadedTTSBackend):
     provider = 'JAWS'
