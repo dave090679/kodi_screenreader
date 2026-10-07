@@ -298,9 +298,11 @@ class TTSService(xbmc.Monitor):
         return backend.provider
 
     def checkBackend(self):
-        provider = util.getSetting('backend',None)
-        if provider == self.backendProvider: return
-        self.initTTS()
+        # Compare the backend that would be chosen, not the setting: with automatic
+        # selection the setting is empty and every settings change restarted speech
+        backendClass = backends.getBackend()
+        if backendClass and backendClass.provider == self.backendProvider: return
+        self.initTTS(backendClass)
 
     def checkForText(self):
         self.checkAutoRead()
