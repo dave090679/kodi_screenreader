@@ -13,11 +13,11 @@ source=()
 sha256sums=()
 
 prepare() {
-    # No preparation needed
+    :
 }
 
 build() {
-    # No build required for Python addon
+    :
 }
 
 package() {
