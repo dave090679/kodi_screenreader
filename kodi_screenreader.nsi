@@ -6,8 +6,8 @@
 !include x64.nsh
 !define APP_NAME "kodi screenreader"
 !define WEB_SITE "https://kodi.tv/"
-!define VERSION "01.20.00.00"
-!define INSTALLER_NAME "kodi_screenreader_1.2.exe"
+!define VERSION "01.02.01.00"
+!define INSTALLER_NAME "kodi_screenreader_1.2.1.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 ######################################################################
 AutoCloseWindow true

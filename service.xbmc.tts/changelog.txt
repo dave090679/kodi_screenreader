@@ -23,6 +23,23 @@ EXTERNAL TODO:
  OSX installer?
  Android TTS app for android backend
 
+** 1.2.1 **
+
+Fix Windows SAPI audio output with Python 3.9+ and Unicode MCI audio playback
+Prevent automatic backend selection from restarting speech on settings changes
+Start macOS speech immediately with NSSpeechSynthesizer when available
+
+** 1.2 **
+
+macOS support (OSXSay, VoiceOver) and installer package
+Screen readers (NVDA, JAWS, VoiceOver) are preferred when choosing the backend automatically
+Windows backends ported to Python 3 (SAPI, NVDA 64 bit, comtypes 1.1.9)
+SAPI: speaking via Kodi works on Python 3.9+ (array.tobytes)
+Windows audio player uses the Unicode MCI functions
+macOS: speech starts immediately (NSSpeechSynthesizer instead of one say process per utterance)
+Automatic backend selection no longer restarts speech on every settings change (speech was lost at startup)
+New add-on service.accessibility.setup
+
 ** 1.0.8 **
 
 Now defaults to outputting direct through SAPI - was crashing on Windows when playing speech via XBMC

@@ -289,7 +289,7 @@ class SAPITTSBackend(SimpleTTSBackendBase):
         #Write wave via the wave module
         wavFileObj = wave.open(wavIO,'wb')
         wavFileObj.setparams((1, 2, 22050, 0, 'NONE', 'not compressed'))
-        wavFileObj.writeframes(array.array('B',stream.GetData()).tostring())
+        wavFileObj.writeframes(array.array('B',stream.GetData()).tobytes())
         wavFileObj.close()
 
     def stop(self):
